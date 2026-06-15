@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { logindto } from './login.dto';
 import bcrypt from 'bcrypt';
@@ -7,13 +7,27 @@ import bcrypt from 'bcrypt';
 export class AuthService {
   constructor(private readonly database: DatabaseService) {}
   async loginService(data: logindto) {
-    const password = await bcrypt.hash(data.password!, 10);
-    const admin = this.database.admin.findFirst({
+    const admin = await this.database.admin.findFirst({
       where: {
         username: data.username,
-        password: password,
       },
     });
-    return admin;
+
+    if (!admin) {
+      throw new UnauthorizedException('Not found');
+    } else {
+      const isValid = await bcrypt.compare(data.password!, admin.password);
+      if (!isValid) {
+        throw new UnauthorizedException('Invalid');
+      } else {
+        return {
+          message: 'Login success',
+          data: {
+            id: admin.id,
+            username: admin.username,
+          },
+        };
+      }
+    }
   }
 }
