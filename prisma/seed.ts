@@ -1,7 +1,10 @@
 import 'dotenv/config';
 import { DatabaseService } from 'src/database/database.service';
 import bcrypt from 'bcrypt';
-const db = new DatabaseService();
+import { ConfigService } from '@nestjs/config';
+
+const config = new ConfigService();
+const db = new DatabaseService(config);
 
 async function main() {
   await db.admin.create({
