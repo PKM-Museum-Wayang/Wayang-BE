@@ -18,3 +18,25 @@ model Admin {
   username  String
   password String
 }
+
+model Wayang {
+  id          Int           @id @default(autoincrement())
+  nama  String
+  daerah      String?
+  deskripsi   String?
+  cerita      String?
+  kondisi     String?
+
+  media       MediaWayang[]
+}
+
+model MediaWayang {
+  id          Int      @id @default(autoincrement())
+  judul       String
+  jenisMedia  String
+  keterangan  String?
+  fileUrl     String
+
+  wayangId    Int
+  wayang      Wayang   @relation(fields: [wayangId], references: [id])
+}
