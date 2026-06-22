@@ -28,24 +28,22 @@ export type AggregateAdmin = {
 
 export type AdminAvgAggregateOutputType = {
   id: number | null;
-  password: number | null;
 };
 
 export type AdminSumAggregateOutputType = {
   id: number | null;
-  password: number | null;
 };
 
 export type AdminMinAggregateOutputType = {
   id: number | null;
   username: string | null;
-  password: number | null;
+  password: string | null;
 };
 
 export type AdminMaxAggregateOutputType = {
   id: number | null;
   username: string | null;
-  password: number | null;
+  password: string | null;
 };
 
 export type AdminCountAggregateOutputType = {
@@ -57,12 +55,10 @@ export type AdminCountAggregateOutputType = {
 
 export type AdminAvgAggregateInputType = {
   id?: true;
-  password?: true;
 };
 
 export type AdminSumAggregateInputType = {
   id?: true;
-  password?: true;
 };
 
 export type AdminMinAggregateInputType = {
@@ -180,7 +176,7 @@ export type AdminGroupByArgs<
 export type AdminGroupByOutputType = {
   id: number;
   username: string;
-  password: number;
+  password: string;
   _count: AdminCountAggregateOutputType | null;
   _avg: AdminAvgAggregateOutputType | null;
   _sum: AdminSumAggregateOutputType | null;
@@ -207,7 +203,7 @@ export type AdminWhereInput = {
   NOT?: Prisma.AdminWhereInput | Prisma.AdminWhereInput[];
   id?: Prisma.IntFilter<'Admin'> | number;
   username?: Prisma.StringFilter<'Admin'> | string;
-  password?: Prisma.IntFilter<'Admin'> | number;
+  password?: Prisma.StringFilter<'Admin'> | string;
 };
 
 export type AdminOrderByWithRelationInput = {
@@ -224,7 +220,7 @@ export type AdminWhereUniqueInput = Prisma.AtLeast<
     OR?: Prisma.AdminWhereInput[];
     NOT?: Prisma.AdminWhereInput | Prisma.AdminWhereInput[];
     username?: Prisma.StringFilter<'Admin'> | string;
-    password?: Prisma.IntFilter<'Admin'> | number;
+    password?: Prisma.StringFilter<'Admin'> | string;
   },
   'id'
 >;
@@ -250,46 +246,46 @@ export type AdminScalarWhereWithAggregatesInput = {
     | Prisma.AdminScalarWhereWithAggregatesInput[];
   id?: Prisma.IntWithAggregatesFilter<'Admin'> | number;
   username?: Prisma.StringWithAggregatesFilter<'Admin'> | string;
-  password?: Prisma.IntWithAggregatesFilter<'Admin'> | number;
+  password?: Prisma.StringWithAggregatesFilter<'Admin'> | string;
 };
 
 export type AdminCreateInput = {
   username: string;
-  password: number;
+  password: string;
 };
 
 export type AdminUncheckedCreateInput = {
   id?: number;
   username: string;
-  password: number;
+  password: string;
 };
 
 export type AdminUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string;
-  password?: Prisma.IntFieldUpdateOperationsInput | number;
+  password?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type AdminUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
   username?: Prisma.StringFieldUpdateOperationsInput | string;
-  password?: Prisma.IntFieldUpdateOperationsInput | number;
+  password?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type AdminCreateManyInput = {
   id?: number;
   username: string;
-  password: number;
+  password: string;
 };
 
 export type AdminUpdateManyMutationInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string;
-  password?: Prisma.IntFieldUpdateOperationsInput | number;
+  password?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type AdminUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
   username?: Prisma.StringFieldUpdateOperationsInput | string;
-  password?: Prisma.IntFieldUpdateOperationsInput | number;
+  password?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type AdminOrderByRelevanceInput = {
@@ -308,7 +304,6 @@ export type AdminCountOrderByAggregateInput = {
 
 export type AdminAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  password?: Prisma.SortOrder;
 };
 
 export type AdminMaxOrderByAggregateInput = {
@@ -325,7 +320,6 @@ export type AdminMinOrderByAggregateInput = {
 
 export type AdminSumOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  password?: Prisma.SortOrder;
 };
 
 export type StringFieldUpdateOperationsInput = {
@@ -376,7 +370,7 @@ export type $AdminPayload<
     {
       id: number;
       username: string;
-      password: number;
+      password: string;
     },
     ExtArgs['result']['admin']
   >;
@@ -899,7 +893,7 @@ export interface Prisma__AdminClient<
 export interface AdminFieldRefs {
   readonly id: Prisma.FieldRef<'Admin', 'Int'>;
   readonly username: Prisma.FieldRef<'Admin', 'String'>;
-  readonly password: Prisma.FieldRef<'Admin', 'Int'>;
+  readonly password: Prisma.FieldRef<'Admin', 'String'>;
 }
 
 // Custom InputTypes

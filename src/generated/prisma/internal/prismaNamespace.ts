@@ -563,6 +563,7 @@ export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 
 export const AdminOrderByRelevanceFieldEnum = {
   username: 'username',
+  password: 'password',
 } as const;
 
 export type AdminOrderByRelevanceFieldEnum =

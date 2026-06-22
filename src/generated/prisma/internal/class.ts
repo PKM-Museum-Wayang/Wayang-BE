@@ -19,7 +19,7 @@ const config: runtime.GetPrismaClientConfig = {
   engineVersion: '3c6e192761c0362d496ed980de936e2f3cebcd3a',
   activeProvider: 'mysql',
   inlineSchema:
-    '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "mysql"\n}\n\nmodel Admin {\n  id       Int    @id @default(autoincrement())\n  username String\n  password Int\n}\n',
+    '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider     = "prisma-client"\n  output       = "../src/generated/prisma"\n  moduleFormat = "cjs"\n}\n\ndatasource db {\n  provider = "mysql"\n}\n\nmodel Admin {\n  id       Int    @id @default(autoincrement())\n  username String\n  password String\n}\n',
   runtimeDataModel: {
     models: {},
     enums: {},
@@ -32,14 +32,14 @@ const config: runtime.GetPrismaClientConfig = {
 };
 
 config.runtimeDataModel = JSON.parse(
-  '{"models":{"Admin":{"fields":[{"name":"id","kind":"scalar","type":"Int"},{"name":"username","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"Int"}],"dbName":null}},"enums":{},"types":{}}',
+  '{"models":{"Admin":{"fields":[{"name":"id","kind":"scalar","type":"Int"},{"name":"username","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"}],"dbName":null}},"enums":{},"types":{}}',
 );
 config.parameterizationSchema = {
   strings: JSON.parse(
     '["where","Admin.findUnique","Admin.findUniqueOrThrow","orderBy","cursor","Admin.findFirst","Admin.findFirstOrThrow","Admin.findMany","data","Admin.createOne","Admin.createMany","Admin.updateOne","Admin.updateMany","create","update","Admin.upsertOne","Admin.deleteOne","Admin.deleteMany","having","_count","_avg","_sum","_min","_max","Admin.groupBy","Admin.aggregate","AND","OR","NOT","id","username","password","equals","in","notIn","lt","lte","gt","gte","contains","startsWith","endsWith","search","not","_relevance","set","increment","decrement","multiply","divide"]',
   ),
   graph:
-    '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',
+    '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',
 };
 
 async function decodeBase64AsWasm(
@@ -52,11 +52,11 @@ async function decodeBase64AsWasm(
 
 config.compilerWasm = {
   getRuntime: async () =>
-    await import('@prisma/client/runtime/query_compiler_fast_bg.mysql.mjs'),
+    await import('@prisma/client/runtime/query_compiler_fast_bg.mysql.js'),
 
   getQueryCompilerWasmModule: async () => {
     const { wasm } =
-      await import('@prisma/client/runtime/query_compiler_fast_bg.mysql.wasm-base64.mjs');
+      await import('@prisma/client/runtime/query_compiler_fast_bg.mysql.wasm-base64.js');
     return await decodeBase64AsWasm(wasm);
   },
 
