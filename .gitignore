@@ -1,4 +1,5 @@
 .env
+storage/*
 # compiled output
 /dist
 /node_modules
