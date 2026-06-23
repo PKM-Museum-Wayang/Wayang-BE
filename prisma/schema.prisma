@@ -14,21 +14,44 @@ datasource db {
 }
 
 model Admin {
-  id    Int    @id @default(autoincrement())
-  username  String
+  id       Int    @id @default(autoincrement())
+  username String
   password String
 }
 
-model Wayang {
-  id          Int           @id @default(autoincrement())
-  noWayang    String        @unique
-  nama  String
-  daerah      String?
-  deskripsi   String?
-  cerita      String?
-  kondisi     String?
+model Golongan {
+  id            Int      @id @default(autoincrement())
+  namaGolongan  String
+  tipeGolongan  String
 
-  media       MediaWayang[]
+  wayang        Wayang[]
+}
+
+model Penyimpanan {
+  id         Int      @id @default(autoincrement())
+  namaKotak  String
+
+  wayang     Wayang[]
+}
+
+model Wayang {
+  id            Int           @id @default(autoincrement())
+  noWayang      String        @unique
+  nama          String
+  daerah        String?
+  deskripsi     String?
+  cerita        String?
+  kondisi       String?
+
+  golonganId    Int
+  golongan      Golongan      @relation(fields: [golonganId], references: [id])
+
+
+  penyimpananId Int
+  penyimpanan   Penyimpanan   @relation(fields: [penyimpananId], references: [id])
+
+ 
+  media         MediaWayang[]
 }
 
 model MediaWayang {
