@@ -1,7 +1,5 @@
 export class WayangDto {
-  noWayang!: string;
   nama!: string;
-
   daerah?: string;
   deskripsi?: string;
   cerita?: string;
@@ -9,4 +7,6 @@ export class WayangDto {
 
   golonganId!: number;
   penyimpananId!: number;
+
+  urutan?: number;
 }

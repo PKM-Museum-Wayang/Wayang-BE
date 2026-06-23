@@ -10,9 +10,53 @@ export class WayangService {
   constructor(private readonly database: DatabaseService) {}
 
   async create(body: WayangDto) {
+    if (!body.golonganId || !body.penyimpananId) {
+      throw new Error('golonganId dan penyimpananId wajib diisi');
+    }
+
+    const golongan = await this.database.golongan.findUnique({
+      where: { id: body.golonganId },
+    });
+
+    if (!golongan) {
+      throw new Error('Golongan tidak ditemukan');
+    }
+
+    const countInKotak = await this.database.wayang.count({
+      where: {
+        golonganId: body.golonganId,
+        penyimpananId: body.penyimpananId,
+      },
+    });
+
+    const urutanDalamKotak = countInKotak + 1;
+
+    const countGolongan = await this.database.wayang.count({
+      where: {
+        golonganId: body.golonganId,
+      },
+    });
+
+    const urutanGolongan = String(countGolongan + 1).padStart(2, '0');
+
+    const kodeMap: Record<string, string> = {
+      SIMPINGAN_KIRI: 'KI',
+      SIMPINGAN_KANAN: 'KA',
+      DUDHAHAN: 'DU',
+    };
+
+    const kodeGolongan = kodeMap[golongan.tipeGolongan];
+
+    if (!kodeGolongan) {
+      throw new Error('Tipe golongan tidak valid');
+    }
+
+    const noWayang = `${urutanGolongan}-${kodeGolongan}-${body.penyimpananId}-${urutanDalamKotak}`;
+
     return this.database.wayang.create({
       data: {
-        noWayang: body.noWayang,
+        noWayang,
+
         nama: body.nama,
         daerah: body.daerah,
         deskripsi: body.deskripsi,
@@ -88,7 +132,7 @@ export class WayangService {
     return this.database.wayang.update({
       where: { id },
       data: {
-        noWayang: body.noWayang,
+        // noWayang: body.noWayang,
         nama: body.nama,
         daerah: body.daerah,
         deskripsi: body.deskripsi,
