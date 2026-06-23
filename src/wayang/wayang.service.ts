@@ -18,9 +18,19 @@ export class WayangService {
         deskripsi: body.deskripsi,
         cerita: body.cerita,
         kondisi: body.kondisi,
+
+        golongan: {
+          connect: { id: body.golonganId },
+        },
+
+        penyimpanan: {
+          connect: { id: body.penyimpananId },
+        },
       },
       include: {
         media: true,
+        golongan: true,
+        penyimpanan: true,
       },
     });
   }
@@ -47,6 +57,8 @@ export class WayangService {
     return this.database.wayang.findMany({
       include: {
         media: true,
+        golongan: true,
+        penyimpanan: true,
       },
     });
   }
@@ -56,6 +68,8 @@ export class WayangService {
       where: { id },
       include: {
         media: true,
+        golongan: true,
+        penyimpanan: true,
       },
     });
   }
@@ -80,10 +94,17 @@ export class WayangService {
         deskripsi: body.deskripsi,
         cerita: body.cerita,
         kondisi: body.kondisi,
+
+        golonganId: body.golonganId,
+        penyimpananId: body.penyimpananId,
+      },
+      include: {
+        media: true,
+        golongan: true,
+        penyimpanan: true,
       },
     });
   }
-
   async updateMedia(
     mediaId: number,
     body: MediaWayangDto,
