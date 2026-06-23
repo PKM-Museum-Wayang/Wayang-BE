@@ -21,6 +21,7 @@ model Admin {
 
 model Wayang {
   id          Int           @id @default(autoincrement())
+  noWayang    String        @unique
   nama  String
   daerah      String?
   deskripsi   String?
