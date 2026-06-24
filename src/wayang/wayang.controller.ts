@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'Multer';
+import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { WayangService } from './wayang.service';
 import { MediaWayangDto } from './mediawayang.dto';
