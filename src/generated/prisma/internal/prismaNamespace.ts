@@ -417,6 +417,9 @@ export const ModelName = {
   Penyimpanan: 'Penyimpanan',
   Wayang: 'Wayang',
   MediaWayang: 'MediaWayang',
+  Peminjam: 'Peminjam',
+  LogPeminjaman: 'LogPeminjaman',
+  LogKelola: 'LogKelola',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -438,7 +441,15 @@ export type TypeMap<
     omit: GlobalOmitOptions;
   };
   meta: {
-    modelProps: 'admin' | 'golongan' | 'penyimpanan' | 'wayang' | 'mediaWayang';
+    modelProps:
+      | 'admin'
+      | 'golongan'
+      | 'penyimpanan'
+      | 'wayang'
+      | 'mediaWayang'
+      | 'peminjam'
+      | 'logPeminjaman'
+      | 'logKelola';
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -782,6 +793,210 @@ export type TypeMap<
         };
       };
     };
+    Peminjam: {
+      payload: Prisma.$PeminjamPayload<ExtArgs>;
+      fields: Prisma.PeminjamFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.PeminjamFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.PeminjamFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload>;
+        };
+        findFirst: {
+          args: Prisma.PeminjamFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.PeminjamFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload>;
+        };
+        findMany: {
+          args: Prisma.PeminjamFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload>[];
+        };
+        create: {
+          args: Prisma.PeminjamCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload>;
+        };
+        createMany: {
+          args: Prisma.PeminjamCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        delete: {
+          args: Prisma.PeminjamDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload>;
+        };
+        update: {
+          args: Prisma.PeminjamUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload>;
+        };
+        deleteMany: {
+          args: Prisma.PeminjamDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.PeminjamUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        upsert: {
+          args: Prisma.PeminjamUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeminjamPayload>;
+        };
+        aggregate: {
+          args: Prisma.PeminjamAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePeminjam>;
+        };
+        groupBy: {
+          args: Prisma.PeminjamGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.PeminjamGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.PeminjamCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.PeminjamCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    LogPeminjaman: {
+      payload: Prisma.$LogPeminjamanPayload<ExtArgs>;
+      fields: Prisma.LogPeminjamanFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.LogPeminjamanFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.LogPeminjamanFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload>;
+        };
+        findFirst: {
+          args: Prisma.LogPeminjamanFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.LogPeminjamanFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload>;
+        };
+        findMany: {
+          args: Prisma.LogPeminjamanFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload>[];
+        };
+        create: {
+          args: Prisma.LogPeminjamanCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload>;
+        };
+        createMany: {
+          args: Prisma.LogPeminjamanCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        delete: {
+          args: Prisma.LogPeminjamanDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload>;
+        };
+        update: {
+          args: Prisma.LogPeminjamanUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload>;
+        };
+        deleteMany: {
+          args: Prisma.LogPeminjamanDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.LogPeminjamanUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        upsert: {
+          args: Prisma.LogPeminjamanUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogPeminjamanPayload>;
+        };
+        aggregate: {
+          args: Prisma.LogPeminjamanAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLogPeminjaman>;
+        };
+        groupBy: {
+          args: Prisma.LogPeminjamanGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.LogPeminjamanGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.LogPeminjamanCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.LogPeminjamanCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    LogKelola: {
+      payload: Prisma.$LogKelolaPayload<ExtArgs>;
+      fields: Prisma.LogKelolaFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.LogKelolaFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.LogKelolaFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload>;
+        };
+        findFirst: {
+          args: Prisma.LogKelolaFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.LogKelolaFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload>;
+        };
+        findMany: {
+          args: Prisma.LogKelolaFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload>[];
+        };
+        create: {
+          args: Prisma.LogKelolaCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload>;
+        };
+        createMany: {
+          args: Prisma.LogKelolaCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        delete: {
+          args: Prisma.LogKelolaDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload>;
+        };
+        update: {
+          args: Prisma.LogKelolaUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload>;
+        };
+        deleteMany: {
+          args: Prisma.LogKelolaDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.LogKelolaUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        upsert: {
+          args: Prisma.LogKelolaUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogKelolaPayload>;
+        };
+        aggregate: {
+          args: Prisma.LogKelolaAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLogKelola>;
+        };
+        groupBy: {
+          args: Prisma.LogKelolaGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.LogKelolaGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.LogKelolaCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.LogKelolaCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
   };
 } & {
   other: {
@@ -832,8 +1047,8 @@ export type AdminScalarFieldEnum =
 
 export const GolonganScalarFieldEnum = {
   id: 'id',
-  tipeGolongan: 'tipeGolongan',
   namaGolongan: 'namaGolongan',
+  tipeGolongan: 'tipeGolongan',
 } as const;
 
 export type GolonganScalarFieldEnum =
@@ -852,8 +1067,8 @@ export const WayangScalarFieldEnum = {
   noWayang: 'noWayang',
   nama: 'nama',
   daerah: 'daerah',
-  deskripsi: 'deskripsi',
   cerita: 'cerita',
+  deskripsi: 'deskripsi',
   kondisi: 'kondisi',
   golonganId: 'golonganId',
   penyimpananId: 'penyimpananId',
@@ -864,8 +1079,8 @@ export type WayangScalarFieldEnum =
 
 export const MediaWayangScalarFieldEnum = {
   id: 'id',
-  judul: 'judul',
-  jenisMedia: 'jenisMedia',
+  namaFile: 'namaFile',
+  jenis: 'jenis',
   keterangan: 'keterangan',
   fileUrl: 'fileUrl',
   wayangId: 'wayangId',
@@ -873,6 +1088,39 @@ export const MediaWayangScalarFieldEnum = {
 
 export type MediaWayangScalarFieldEnum =
   (typeof MediaWayangScalarFieldEnum)[keyof typeof MediaWayangScalarFieldEnum];
+
+export const PeminjamScalarFieldEnum = {
+  id: 'id',
+  namaPeminjam: 'namaPeminjam',
+  alamat: 'alamat',
+  noHp: 'noHp',
+} as const;
+
+export type PeminjamScalarFieldEnum =
+  (typeof PeminjamScalarFieldEnum)[keyof typeof PeminjamScalarFieldEnum];
+
+export const LogPeminjamanScalarFieldEnum = {
+  id: 'id',
+  peminjamId: 'peminjamId',
+  wayangId: 'wayangId',
+  tanggalPinjam: 'tanggalPinjam',
+  tanggalKembali: 'tanggalKembali',
+  keterangan: 'keterangan',
+  status: 'status',
+} as const;
+
+export type LogPeminjamanScalarFieldEnum =
+  (typeof LogPeminjamanScalarFieldEnum)[keyof typeof LogPeminjamanScalarFieldEnum];
+
+export const LogKelolaScalarFieldEnum = {
+  id: 'id',
+  adminId: 'adminId',
+  wayangId: 'wayangId',
+  pesan: 'pesan',
+} as const;
+
+export type LogKelolaScalarFieldEnum =
+  (typeof LogKelolaScalarFieldEnum)[keyof typeof LogKelolaScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',
@@ -890,8 +1138,8 @@ export type AdminOrderByRelevanceFieldEnum =
   (typeof AdminOrderByRelevanceFieldEnum)[keyof typeof AdminOrderByRelevanceFieldEnum];
 
 export const GolonganOrderByRelevanceFieldEnum = {
-  tipeGolongan: 'tipeGolongan',
   namaGolongan: 'namaGolongan',
+  tipeGolongan: 'tipeGolongan',
 } as const;
 
 export type GolonganOrderByRelevanceFieldEnum =
@@ -915,8 +1163,8 @@ export const WayangOrderByRelevanceFieldEnum = {
   noWayang: 'noWayang',
   nama: 'nama',
   daerah: 'daerah',
-  deskripsi: 'deskripsi',
   cerita: 'cerita',
+  deskripsi: 'deskripsi',
   kondisi: 'kondisi',
 } as const;
 
@@ -924,14 +1172,38 @@ export type WayangOrderByRelevanceFieldEnum =
   (typeof WayangOrderByRelevanceFieldEnum)[keyof typeof WayangOrderByRelevanceFieldEnum];
 
 export const MediaWayangOrderByRelevanceFieldEnum = {
-  judul: 'judul',
-  jenisMedia: 'jenisMedia',
+  namaFile: 'namaFile',
+  jenis: 'jenis',
   keterangan: 'keterangan',
   fileUrl: 'fileUrl',
 } as const;
 
 export type MediaWayangOrderByRelevanceFieldEnum =
   (typeof MediaWayangOrderByRelevanceFieldEnum)[keyof typeof MediaWayangOrderByRelevanceFieldEnum];
+
+export const PeminjamOrderByRelevanceFieldEnum = {
+  namaPeminjam: 'namaPeminjam',
+  alamat: 'alamat',
+  noHp: 'noHp',
+} as const;
+
+export type PeminjamOrderByRelevanceFieldEnum =
+  (typeof PeminjamOrderByRelevanceFieldEnum)[keyof typeof PeminjamOrderByRelevanceFieldEnum];
+
+export const LogPeminjamanOrderByRelevanceFieldEnum = {
+  keterangan: 'keterangan',
+  status: 'status',
+} as const;
+
+export type LogPeminjamanOrderByRelevanceFieldEnum =
+  (typeof LogPeminjamanOrderByRelevanceFieldEnum)[keyof typeof LogPeminjamanOrderByRelevanceFieldEnum];
+
+export const LogKelolaOrderByRelevanceFieldEnum = {
+  pesan: 'pesan',
+} as const;
+
+export type LogKelolaOrderByRelevanceFieldEnum =
+  (typeof LogKelolaOrderByRelevanceFieldEnum)[keyof typeof LogKelolaOrderByRelevanceFieldEnum];
 
 /**
  * Field references
@@ -951,6 +1223,14 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
   'String'
+>;
+
+/**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'DateTime'
 >;
 
 /**
@@ -1084,6 +1364,9 @@ export type GlobalOmitConfig = {
   penyimpanan?: Prisma.PenyimpananOmit;
   wayang?: Prisma.WayangOmit;
   mediaWayang?: Prisma.MediaWayangOmit;
+  peminjam?: Prisma.PeminjamOmit;
+  logPeminjaman?: Prisma.LogPeminjamanOmit;
+  logKelola?: Prisma.LogKelolaOmit;
 };
 
 /* Types for Logging */

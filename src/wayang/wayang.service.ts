@@ -88,8 +88,8 @@ export class WayangService {
 
     return this.database.mediaWayang.create({
       data: {
-        judul: body.judul,
-        jenisMedia: body.jenisMedia,
+        namaFile: body.namaFile,
+        jenis: body.jenis,
         keterangan: body.keterangan,
         fileUrl,
         wayangId,
@@ -157,8 +157,8 @@ export class WayangService {
     return this.database.mediaWayang.update({
       where: { id: mediaId },
       data: {
-        judul: body.judul,
-        jenisMedia: body.jenisMedia,
+        namaFile: body.namaFile,
+        jenis: body.jenis,
         keterangan: body.keterangan,
         ...(file && {
           fileUrl: `/storage/${file.filename}`,

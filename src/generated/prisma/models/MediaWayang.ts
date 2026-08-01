@@ -38,8 +38,8 @@ export type MediaWayangSumAggregateOutputType = {
 
 export type MediaWayangMinAggregateOutputType = {
   id: number | null;
-  judul: string | null;
-  jenisMedia: string | null;
+  namaFile: string | null;
+  jenis: string | null;
   keterangan: string | null;
   fileUrl: string | null;
   wayangId: number | null;
@@ -47,8 +47,8 @@ export type MediaWayangMinAggregateOutputType = {
 
 export type MediaWayangMaxAggregateOutputType = {
   id: number | null;
-  judul: string | null;
-  jenisMedia: string | null;
+  namaFile: string | null;
+  jenis: string | null;
   keterangan: string | null;
   fileUrl: string | null;
   wayangId: number | null;
@@ -56,8 +56,8 @@ export type MediaWayangMaxAggregateOutputType = {
 
 export type MediaWayangCountAggregateOutputType = {
   id: number;
-  judul: number;
-  jenisMedia: number;
+  namaFile: number;
+  jenis: number;
   keterangan: number;
   fileUrl: number;
   wayangId: number;
@@ -76,8 +76,8 @@ export type MediaWayangSumAggregateInputType = {
 
 export type MediaWayangMinAggregateInputType = {
   id?: true;
-  judul?: true;
-  jenisMedia?: true;
+  namaFile?: true;
+  jenis?: true;
   keterangan?: true;
   fileUrl?: true;
   wayangId?: true;
@@ -85,8 +85,8 @@ export type MediaWayangMinAggregateInputType = {
 
 export type MediaWayangMaxAggregateInputType = {
   id?: true;
-  judul?: true;
-  jenisMedia?: true;
+  namaFile?: true;
+  jenis?: true;
   keterangan?: true;
   fileUrl?: true;
   wayangId?: true;
@@ -94,8 +94,8 @@ export type MediaWayangMaxAggregateInputType = {
 
 export type MediaWayangCountAggregateInputType = {
   id?: true;
-  judul?: true;
-  jenisMedia?: true;
+  namaFile?: true;
+  jenis?: true;
   keterangan?: true;
   fileUrl?: true;
   wayangId?: true;
@@ -197,8 +197,8 @@ export type MediaWayangGroupByArgs<
 
 export type MediaWayangGroupByOutputType = {
   id: number;
-  judul: string;
-  jenisMedia: string;
+  namaFile: string;
+  jenis: string;
   keterangan: string | null;
   fileUrl: string;
   wayangId: number;
@@ -227,8 +227,8 @@ export type MediaWayangWhereInput = {
   OR?: Prisma.MediaWayangWhereInput[];
   NOT?: Prisma.MediaWayangWhereInput | Prisma.MediaWayangWhereInput[];
   id?: Prisma.IntFilter<'MediaWayang'> | number;
-  judul?: Prisma.StringFilter<'MediaWayang'> | string;
-  jenisMedia?: Prisma.StringFilter<'MediaWayang'> | string;
+  namaFile?: Prisma.StringFilter<'MediaWayang'> | string;
+  jenis?: Prisma.StringFilter<'MediaWayang'> | string;
   keterangan?: Prisma.StringNullableFilter<'MediaWayang'> | string | null;
   fileUrl?: Prisma.StringFilter<'MediaWayang'> | string;
   wayangId?: Prisma.IntFilter<'MediaWayang'> | number;
@@ -240,8 +240,8 @@ export type MediaWayangWhereInput = {
 
 export type MediaWayangOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
-  judul?: Prisma.SortOrder;
-  jenisMedia?: Prisma.SortOrder;
+  namaFile?: Prisma.SortOrder;
+  jenis?: Prisma.SortOrder;
   keterangan?: Prisma.SortOrderInput | Prisma.SortOrder;
   fileUrl?: Prisma.SortOrder;
   wayangId?: Prisma.SortOrder;
@@ -255,8 +255,8 @@ export type MediaWayangWhereUniqueInput = Prisma.AtLeast<
     AND?: Prisma.MediaWayangWhereInput | Prisma.MediaWayangWhereInput[];
     OR?: Prisma.MediaWayangWhereInput[];
     NOT?: Prisma.MediaWayangWhereInput | Prisma.MediaWayangWhereInput[];
-    judul?: Prisma.StringFilter<'MediaWayang'> | string;
-    jenisMedia?: Prisma.StringFilter<'MediaWayang'> | string;
+    namaFile?: Prisma.StringFilter<'MediaWayang'> | string;
+    jenis?: Prisma.StringFilter<'MediaWayang'> | string;
     keterangan?: Prisma.StringNullableFilter<'MediaWayang'> | string | null;
     fileUrl?: Prisma.StringFilter<'MediaWayang'> | string;
     wayangId?: Prisma.IntFilter<'MediaWayang'> | number;
@@ -270,8 +270,8 @@ export type MediaWayangWhereUniqueInput = Prisma.AtLeast<
 
 export type MediaWayangOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
-  judul?: Prisma.SortOrder;
-  jenisMedia?: Prisma.SortOrder;
+  namaFile?: Prisma.SortOrder;
+  jenis?: Prisma.SortOrder;
   keterangan?: Prisma.SortOrderInput | Prisma.SortOrder;
   fileUrl?: Prisma.SortOrder;
   wayangId?: Prisma.SortOrder;
@@ -291,8 +291,8 @@ export type MediaWayangScalarWhereWithAggregatesInput = {
     | Prisma.MediaWayangScalarWhereWithAggregatesInput
     | Prisma.MediaWayangScalarWhereWithAggregatesInput[];
   id?: Prisma.IntWithAggregatesFilter<'MediaWayang'> | number;
-  judul?: Prisma.StringWithAggregatesFilter<'MediaWayang'> | string;
-  jenisMedia?: Prisma.StringWithAggregatesFilter<'MediaWayang'> | string;
+  namaFile?: Prisma.StringWithAggregatesFilter<'MediaWayang'> | string;
+  jenis?: Prisma.StringWithAggregatesFilter<'MediaWayang'> | string;
   keterangan?:
     | Prisma.StringNullableWithAggregatesFilter<'MediaWayang'>
     | string
@@ -302,8 +302,8 @@ export type MediaWayangScalarWhereWithAggregatesInput = {
 };
 
 export type MediaWayangCreateInput = {
-  judul: string;
-  jenisMedia: string;
+  namaFile: string;
+  jenis: string;
   keterangan?: string | null;
   fileUrl: string;
   wayang: Prisma.WayangCreateNestedOneWithoutMediaInput;
@@ -311,16 +311,16 @@ export type MediaWayangCreateInput = {
 
 export type MediaWayangUncheckedCreateInput = {
   id?: number;
-  judul: string;
-  jenisMedia: string;
+  namaFile: string;
+  jenis: string;
   keterangan?: string | null;
   fileUrl: string;
   wayangId: number;
 };
 
 export type MediaWayangUpdateInput = {
-  judul?: Prisma.StringFieldUpdateOperationsInput | string;
-  jenisMedia?: Prisma.StringFieldUpdateOperationsInput | string;
+  namaFile?: Prisma.StringFieldUpdateOperationsInput | string;
+  jenis?: Prisma.StringFieldUpdateOperationsInput | string;
   keterangan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string;
   wayang?: Prisma.WayangUpdateOneRequiredWithoutMediaNestedInput;
@@ -328,8 +328,8 @@ export type MediaWayangUpdateInput = {
 
 export type MediaWayangUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
-  judul?: Prisma.StringFieldUpdateOperationsInput | string;
-  jenisMedia?: Prisma.StringFieldUpdateOperationsInput | string;
+  namaFile?: Prisma.StringFieldUpdateOperationsInput | string;
+  jenis?: Prisma.StringFieldUpdateOperationsInput | string;
   keterangan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string;
   wayangId?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -337,24 +337,24 @@ export type MediaWayangUncheckedUpdateInput = {
 
 export type MediaWayangCreateManyInput = {
   id?: number;
-  judul: string;
-  jenisMedia: string;
+  namaFile: string;
+  jenis: string;
   keterangan?: string | null;
   fileUrl: string;
   wayangId: number;
 };
 
 export type MediaWayangUpdateManyMutationInput = {
-  judul?: Prisma.StringFieldUpdateOperationsInput | string;
-  jenisMedia?: Prisma.StringFieldUpdateOperationsInput | string;
+  namaFile?: Prisma.StringFieldUpdateOperationsInput | string;
+  jenis?: Prisma.StringFieldUpdateOperationsInput | string;
   keterangan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type MediaWayangUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
-  judul?: Prisma.StringFieldUpdateOperationsInput | string;
-  jenisMedia?: Prisma.StringFieldUpdateOperationsInput | string;
+  namaFile?: Prisma.StringFieldUpdateOperationsInput | string;
+  jenis?: Prisma.StringFieldUpdateOperationsInput | string;
   keterangan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string;
   wayangId?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -380,8 +380,8 @@ export type MediaWayangOrderByRelevanceInput = {
 
 export type MediaWayangCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  judul?: Prisma.SortOrder;
-  jenisMedia?: Prisma.SortOrder;
+  namaFile?: Prisma.SortOrder;
+  jenis?: Prisma.SortOrder;
   keterangan?: Prisma.SortOrder;
   fileUrl?: Prisma.SortOrder;
   wayangId?: Prisma.SortOrder;
@@ -394,8 +394,8 @@ export type MediaWayangAvgOrderByAggregateInput = {
 
 export type MediaWayangMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  judul?: Prisma.SortOrder;
-  jenisMedia?: Prisma.SortOrder;
+  namaFile?: Prisma.SortOrder;
+  jenis?: Prisma.SortOrder;
   keterangan?: Prisma.SortOrder;
   fileUrl?: Prisma.SortOrder;
   wayangId?: Prisma.SortOrder;
@@ -403,8 +403,8 @@ export type MediaWayangMaxOrderByAggregateInput = {
 
 export type MediaWayangMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  judul?: Prisma.SortOrder;
-  jenisMedia?: Prisma.SortOrder;
+  namaFile?: Prisma.SortOrder;
+  jenis?: Prisma.SortOrder;
   keterangan?: Prisma.SortOrder;
   fileUrl?: Prisma.SortOrder;
   wayangId?: Prisma.SortOrder;
@@ -526,16 +526,16 @@ export type MediaWayangUncheckedUpdateManyWithoutWayangNestedInput = {
 };
 
 export type MediaWayangCreateWithoutWayangInput = {
-  judul: string;
-  jenisMedia: string;
+  namaFile: string;
+  jenis: string;
   keterangan?: string | null;
   fileUrl: string;
 };
 
 export type MediaWayangUncheckedCreateWithoutWayangInput = {
   id?: number;
-  judul: string;
-  jenisMedia: string;
+  namaFile: string;
+  jenis: string;
   keterangan?: string | null;
   fileUrl: string;
 };
@@ -592,8 +592,8 @@ export type MediaWayangScalarWhereInput = {
     | Prisma.MediaWayangScalarWhereInput
     | Prisma.MediaWayangScalarWhereInput[];
   id?: Prisma.IntFilter<'MediaWayang'> | number;
-  judul?: Prisma.StringFilter<'MediaWayang'> | string;
-  jenisMedia?: Prisma.StringFilter<'MediaWayang'> | string;
+  namaFile?: Prisma.StringFilter<'MediaWayang'> | string;
+  jenis?: Prisma.StringFilter<'MediaWayang'> | string;
   keterangan?: Prisma.StringNullableFilter<'MediaWayang'> | string | null;
   fileUrl?: Prisma.StringFilter<'MediaWayang'> | string;
   wayangId?: Prisma.IntFilter<'MediaWayang'> | number;
@@ -601,31 +601,31 @@ export type MediaWayangScalarWhereInput = {
 
 export type MediaWayangCreateManyWayangInput = {
   id?: number;
-  judul: string;
-  jenisMedia: string;
+  namaFile: string;
+  jenis: string;
   keterangan?: string | null;
   fileUrl: string;
 };
 
 export type MediaWayangUpdateWithoutWayangInput = {
-  judul?: Prisma.StringFieldUpdateOperationsInput | string;
-  jenisMedia?: Prisma.StringFieldUpdateOperationsInput | string;
+  namaFile?: Prisma.StringFieldUpdateOperationsInput | string;
+  jenis?: Prisma.StringFieldUpdateOperationsInput | string;
   keterangan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type MediaWayangUncheckedUpdateWithoutWayangInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
-  judul?: Prisma.StringFieldUpdateOperationsInput | string;
-  jenisMedia?: Prisma.StringFieldUpdateOperationsInput | string;
+  namaFile?: Prisma.StringFieldUpdateOperationsInput | string;
+  jenis?: Prisma.StringFieldUpdateOperationsInput | string;
   keterangan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type MediaWayangUncheckedUpdateManyWithoutWayangInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
-  judul?: Prisma.StringFieldUpdateOperationsInput | string;
-  jenisMedia?: Prisma.StringFieldUpdateOperationsInput | string;
+  namaFile?: Prisma.StringFieldUpdateOperationsInput | string;
+  jenis?: Prisma.StringFieldUpdateOperationsInput | string;
   keterangan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string;
 };
@@ -636,8 +636,8 @@ export type MediaWayangSelect<
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
-    judul?: boolean;
-    jenisMedia?: boolean;
+    namaFile?: boolean;
+    jenis?: boolean;
     keterangan?: boolean;
     fileUrl?: boolean;
     wayangId?: boolean;
@@ -648,8 +648,8 @@ export type MediaWayangSelect<
 
 export type MediaWayangSelectScalar = {
   id?: boolean;
-  judul?: boolean;
-  jenisMedia?: boolean;
+  namaFile?: boolean;
+  jenis?: boolean;
   keterangan?: boolean;
   fileUrl?: boolean;
   wayangId?: boolean;
@@ -659,7 +659,7 @@ export type MediaWayangOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'judul' | 'jenisMedia' | 'keterangan' | 'fileUrl' | 'wayangId',
+  'id' | 'namaFile' | 'jenis' | 'keterangan' | 'fileUrl' | 'wayangId',
   ExtArgs['result']['mediaWayang']
 >;
 export type MediaWayangInclude<
@@ -680,8 +680,8 @@ export type $MediaWayangPayload<
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
       id: number;
-      judul: string;
-      jenisMedia: string;
+      namaFile: string;
+      jenis: string;
       keterangan: string | null;
       fileUrl: string;
       wayangId: number;
@@ -1223,8 +1223,8 @@ export interface Prisma__MediaWayangClient<
  */
 export interface MediaWayangFieldRefs {
   readonly id: Prisma.FieldRef<'MediaWayang', 'Int'>;
-  readonly judul: Prisma.FieldRef<'MediaWayang', 'String'>;
-  readonly jenisMedia: Prisma.FieldRef<'MediaWayang', 'String'>;
+  readonly namaFile: Prisma.FieldRef<'MediaWayang', 'String'>;
+  readonly jenis: Prisma.FieldRef<'MediaWayang', 'String'>;
   readonly keterangan: Prisma.FieldRef<'MediaWayang', 'String'>;
   readonly fileUrl: Prisma.FieldRef<'MediaWayang', 'String'>;
   readonly wayangId: Prisma.FieldRef<'MediaWayang', 'Int'>;

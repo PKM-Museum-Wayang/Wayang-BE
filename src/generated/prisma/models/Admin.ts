@@ -204,12 +204,14 @@ export type AdminWhereInput = {
   id?: Prisma.IntFilter<'Admin'> | number;
   username?: Prisma.StringFilter<'Admin'> | string;
   password?: Prisma.StringFilter<'Admin'> | string;
+  logKelola?: Prisma.LogKelolaListRelationFilter;
 };
 
 export type AdminOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   username?: Prisma.SortOrder;
   password?: Prisma.SortOrder;
+  logKelola?: Prisma.LogKelolaOrderByRelationAggregateInput;
   _relevance?: Prisma.AdminOrderByRelevanceInput;
 };
 
@@ -221,6 +223,7 @@ export type AdminWhereUniqueInput = Prisma.AtLeast<
     OR?: Prisma.AdminWhereInput[];
     NOT?: Prisma.AdminWhereInput | Prisma.AdminWhereInput[];
     password?: Prisma.StringFilter<'Admin'> | string;
+    logKelola?: Prisma.LogKelolaListRelationFilter;
   },
   'id' | 'username'
 >;
@@ -252,23 +255,27 @@ export type AdminScalarWhereWithAggregatesInput = {
 export type AdminCreateInput = {
   username: string;
   password: string;
+  logKelola?: Prisma.LogKelolaCreateNestedManyWithoutAdminInput;
 };
 
 export type AdminUncheckedCreateInput = {
   id?: number;
   username: string;
   password: string;
+  logKelola?: Prisma.LogKelolaUncheckedCreateNestedManyWithoutAdminInput;
 };
 
 export type AdminUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.StringFieldUpdateOperationsInput | string;
+  logKelola?: Prisma.LogKelolaUpdateManyWithoutAdminNestedInput;
 };
 
 export type AdminUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
   username?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.StringFieldUpdateOperationsInput | string;
+  logKelola?: Prisma.LogKelolaUncheckedUpdateManyWithoutAdminNestedInput;
 };
 
 export type AdminCreateManyInput = {
@@ -322,6 +329,11 @@ export type AdminSumOrderByAggregateInput = {
   id?: Prisma.SortOrder;
 };
 
+export type AdminScalarRelationFilter = {
+  is?: Prisma.AdminWhereInput;
+  isNot?: Prisma.AdminWhereInput;
+};
+
 export type StringFieldUpdateOperationsInput = {
   set?: string;
 };
@@ -334,6 +346,120 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number;
 };
 
+export type AdminCreateNestedOneWithoutLogKelolaInput = {
+  create?: Prisma.XOR<
+    Prisma.AdminCreateWithoutLogKelolaInput,
+    Prisma.AdminUncheckedCreateWithoutLogKelolaInput
+  >;
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutLogKelolaInput;
+  connect?: Prisma.AdminWhereUniqueInput;
+};
+
+export type AdminUpdateOneRequiredWithoutLogKelolaNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.AdminCreateWithoutLogKelolaInput,
+    Prisma.AdminUncheckedCreateWithoutLogKelolaInput
+  >;
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutLogKelolaInput;
+  upsert?: Prisma.AdminUpsertWithoutLogKelolaInput;
+  connect?: Prisma.AdminWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.AdminUpdateToOneWithWhereWithoutLogKelolaInput,
+      Prisma.AdminUpdateWithoutLogKelolaInput
+    >,
+    Prisma.AdminUncheckedUpdateWithoutLogKelolaInput
+  >;
+};
+
+export type AdminCreateWithoutLogKelolaInput = {
+  username: string;
+  password: string;
+};
+
+export type AdminUncheckedCreateWithoutLogKelolaInput = {
+  id?: number;
+  username: string;
+  password: string;
+};
+
+export type AdminCreateOrConnectWithoutLogKelolaInput = {
+  where: Prisma.AdminWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.AdminCreateWithoutLogKelolaInput,
+    Prisma.AdminUncheckedCreateWithoutLogKelolaInput
+  >;
+};
+
+export type AdminUpsertWithoutLogKelolaInput = {
+  update: Prisma.XOR<
+    Prisma.AdminUpdateWithoutLogKelolaInput,
+    Prisma.AdminUncheckedUpdateWithoutLogKelolaInput
+  >;
+  create: Prisma.XOR<
+    Prisma.AdminCreateWithoutLogKelolaInput,
+    Prisma.AdminUncheckedCreateWithoutLogKelolaInput
+  >;
+  where?: Prisma.AdminWhereInput;
+};
+
+export type AdminUpdateToOneWithWhereWithoutLogKelolaInput = {
+  where?: Prisma.AdminWhereInput;
+  data: Prisma.XOR<
+    Prisma.AdminUpdateWithoutLogKelolaInput,
+    Prisma.AdminUncheckedUpdateWithoutLogKelolaInput
+  >;
+};
+
+export type AdminUpdateWithoutLogKelolaInput = {
+  username?: Prisma.StringFieldUpdateOperationsInput | string;
+  password?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+
+export type AdminUncheckedUpdateWithoutLogKelolaInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number;
+  username?: Prisma.StringFieldUpdateOperationsInput | string;
+  password?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+
+/**
+ * Count Type AdminCountOutputType
+ */
+
+export type AdminCountOutputType = {
+  logKelola: number;
+};
+
+export type AdminCountOutputTypeSelect<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  logKelola?: boolean | AdminCountOutputTypeCountLogKelolaArgs;
+};
+
+/**
+ * AdminCountOutputType without action
+ */
+export type AdminCountOutputTypeDefaultArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the AdminCountOutputType
+   */
+  select?: Prisma.AdminCountOutputTypeSelect<ExtArgs> | null;
+};
+
+/**
+ * AdminCountOutputType without action
+ */
+export type AdminCountOutputTypeCountLogKelolaArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.LogKelolaWhereInput;
+};
+
 export type AdminSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -342,6 +468,8 @@ export type AdminSelect<
     id?: boolean;
     username?: boolean;
     password?: boolean;
+    logKelola?: boolean | Prisma.Admin$logKelolaArgs<ExtArgs>;
+    _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['admin']
 >;
@@ -359,13 +487,22 @@ export type AdminOmit<
   'id' | 'username' | 'password',
   ExtArgs['result']['admin']
 >;
+export type AdminInclude<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  logKelola?: boolean | Prisma.Admin$logKelolaArgs<ExtArgs>;
+  _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>;
+};
 
 export type $AdminPayload<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   name: 'Admin';
-  objects: {};
+  objects: {
+    logKelola: Prisma.$LogKelolaPayload<ExtArgs>[];
+  };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
       id: number;
@@ -849,6 +986,17 @@ export interface Prisma__AdminClient<
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: 'PrismaPromise';
+  logKelola<T extends Prisma.Admin$logKelolaArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Admin$logKelolaArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$LogKelolaPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -913,6 +1061,10 @@ export type AdminFindUniqueArgs<
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
+  /**
    * Filter, which Admin to fetch.
    */
   where: Prisma.AdminWhereUniqueInput;
@@ -934,6 +1086,10 @@ export type AdminFindUniqueOrThrowArgs<
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
+  /**
    * Filter, which Admin to fetch.
    */
   where: Prisma.AdminWhereUniqueInput;
@@ -954,6 +1110,10 @@ export type AdminFindFirstArgs<
    * Omit specific fields from the Admin
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
   /**
    * Filter, which Admin to fetch.
    */
@@ -1008,6 +1168,10 @@ export type AdminFindFirstOrThrowArgs<
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
+  /**
    * Filter, which Admin to fetch.
    */
   where?: Prisma.AdminWhereInput;
@@ -1060,6 +1224,10 @@ export type AdminFindManyArgs<
    * Omit specific fields from the Admin
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
   /**
    * Filter, which Admins to fetch.
    */
@@ -1114,6 +1282,10 @@ export type AdminCreateArgs<
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
+  /**
    * The data needed to create a Admin.
    */
   data: Prisma.XOR<Prisma.AdminCreateInput, Prisma.AdminUncheckedCreateInput>;
@@ -1148,6 +1320,10 @@ export type AdminUpdateArgs<
    * Omit specific fields from the Admin
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
   /**
    * The data needed to update a Admin.
    */
@@ -1198,6 +1374,10 @@ export type AdminUpsertArgs<
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
+  /**
    * The filter to search for the Admin to update in case it exists.
    */
   where: Prisma.AdminWhereUniqueInput;
@@ -1227,6 +1407,10 @@ export type AdminDeleteArgs<
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
+  /**
    * Filter which Admin to delete.
    */
   where: Prisma.AdminWhereUniqueInput;
@@ -1250,6 +1434,37 @@ export type AdminDeleteManyArgs<
 };
 
 /**
+ * Admin.logKelola
+ */
+export type Admin$logKelolaArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the LogKelola
+   */
+  select?: Prisma.LogKelolaSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the LogKelola
+   */
+  omit?: Prisma.LogKelolaOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogKelolaInclude<ExtArgs> | null;
+  where?: Prisma.LogKelolaWhereInput;
+  orderBy?:
+    | Prisma.LogKelolaOrderByWithRelationInput
+    | Prisma.LogKelolaOrderByWithRelationInput[];
+  cursor?: Prisma.LogKelolaWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.LogKelolaScalarFieldEnum
+    | Prisma.LogKelolaScalarFieldEnum[];
+};
+
+/**
  * Admin without action
  */
 export type AdminDefaultArgs<
@@ -1264,4 +1479,8 @@ export type AdminDefaultArgs<
    * Omit specific fields from the Admin
    */
   omit?: Prisma.AdminOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null;
 };

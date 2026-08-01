@@ -36,20 +36,20 @@ export type GolonganSumAggregateOutputType = {
 
 export type GolonganMinAggregateOutputType = {
   id: number | null;
-  tipeGolongan: string | null;
   namaGolongan: string | null;
+  tipeGolongan: string | null;
 };
 
 export type GolonganMaxAggregateOutputType = {
   id: number | null;
-  tipeGolongan: string | null;
   namaGolongan: string | null;
+  tipeGolongan: string | null;
 };
 
 export type GolonganCountAggregateOutputType = {
   id: number;
-  tipeGolongan: number;
   namaGolongan: number;
+  tipeGolongan: number;
   _all: number;
 };
 
@@ -63,20 +63,20 @@ export type GolonganSumAggregateInputType = {
 
 export type GolonganMinAggregateInputType = {
   id?: true;
-  tipeGolongan?: true;
   namaGolongan?: true;
+  tipeGolongan?: true;
 };
 
 export type GolonganMaxAggregateInputType = {
   id?: true;
-  tipeGolongan?: true;
   namaGolongan?: true;
+  tipeGolongan?: true;
 };
 
 export type GolonganCountAggregateInputType = {
   id?: true;
-  tipeGolongan?: true;
   namaGolongan?: true;
+  tipeGolongan?: true;
   _all?: true;
 };
 
@@ -175,8 +175,8 @@ export type GolonganGroupByArgs<
 
 export type GolonganGroupByOutputType = {
   id: number;
-  tipeGolongan: string;
   namaGolongan: string;
+  tipeGolongan: string;
   _count: GolonganCountAggregateOutputType | null;
   _avg: GolonganAvgAggregateOutputType | null;
   _sum: GolonganSumAggregateOutputType | null;
@@ -202,15 +202,15 @@ export type GolonganWhereInput = {
   OR?: Prisma.GolonganWhereInput[];
   NOT?: Prisma.GolonganWhereInput | Prisma.GolonganWhereInput[];
   id?: Prisma.IntFilter<'Golongan'> | number;
-  tipeGolongan?: Prisma.StringFilter<'Golongan'> | string;
   namaGolongan?: Prisma.StringFilter<'Golongan'> | string;
+  tipeGolongan?: Prisma.StringFilter<'Golongan'> | string;
   wayang?: Prisma.WayangListRelationFilter;
 };
 
 export type GolonganOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
-  tipeGolongan?: Prisma.SortOrder;
   namaGolongan?: Prisma.SortOrder;
+  tipeGolongan?: Prisma.SortOrder;
   wayang?: Prisma.WayangOrderByRelationAggregateInput;
   _relevance?: Prisma.GolonganOrderByRelevanceInput;
 };
@@ -218,21 +218,21 @@ export type GolonganOrderByWithRelationInput = {
 export type GolonganWhereUniqueInput = Prisma.AtLeast<
   {
     id?: number;
-    tipeGolongan_namaGolongan?: Prisma.GolonganTipeGolonganNamaGolonganCompoundUniqueInput;
+    namaGolongan_tipeGolongan?: Prisma.GolonganNamaGolonganTipeGolonganCompoundUniqueInput;
     AND?: Prisma.GolonganWhereInput | Prisma.GolonganWhereInput[];
     OR?: Prisma.GolonganWhereInput[];
     NOT?: Prisma.GolonganWhereInput | Prisma.GolonganWhereInput[];
-    tipeGolongan?: Prisma.StringFilter<'Golongan'> | string;
     namaGolongan?: Prisma.StringFilter<'Golongan'> | string;
+    tipeGolongan?: Prisma.StringFilter<'Golongan'> | string;
     wayang?: Prisma.WayangListRelationFilter;
   },
-  'id' | 'tipeGolongan_namaGolongan'
+  'id' | 'namaGolongan_tipeGolongan'
 >;
 
 export type GolonganOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
-  tipeGolongan?: Prisma.SortOrder;
   namaGolongan?: Prisma.SortOrder;
+  tipeGolongan?: Prisma.SortOrder;
   _count?: Prisma.GolonganCountOrderByAggregateInput;
   _avg?: Prisma.GolonganAvgOrderByAggregateInput;
   _max?: Prisma.GolonganMaxOrderByAggregateInput;
@@ -249,51 +249,51 @@ export type GolonganScalarWhereWithAggregatesInput = {
     | Prisma.GolonganScalarWhereWithAggregatesInput
     | Prisma.GolonganScalarWhereWithAggregatesInput[];
   id?: Prisma.IntWithAggregatesFilter<'Golongan'> | number;
-  tipeGolongan?: Prisma.StringWithAggregatesFilter<'Golongan'> | string;
   namaGolongan?: Prisma.StringWithAggregatesFilter<'Golongan'> | string;
+  tipeGolongan?: Prisma.StringWithAggregatesFilter<'Golongan'> | string;
 };
 
 export type GolonganCreateInput = {
-  tipeGolongan: string;
   namaGolongan: string;
+  tipeGolongan: string;
   wayang?: Prisma.WayangCreateNestedManyWithoutGolonganInput;
 };
 
 export type GolonganUncheckedCreateInput = {
   id?: number;
-  tipeGolongan: string;
   namaGolongan: string;
+  tipeGolongan: string;
   wayang?: Prisma.WayangUncheckedCreateNestedManyWithoutGolonganInput;
 };
 
 export type GolonganUpdateInput = {
-  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   namaGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
+  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   wayang?: Prisma.WayangUpdateManyWithoutGolonganNestedInput;
 };
 
 export type GolonganUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
-  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   namaGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
+  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   wayang?: Prisma.WayangUncheckedUpdateManyWithoutGolonganNestedInput;
 };
 
 export type GolonganCreateManyInput = {
   id?: number;
-  tipeGolongan: string;
   namaGolongan: string;
+  tipeGolongan: string;
 };
 
 export type GolonganUpdateManyMutationInput = {
-  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   namaGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
+  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type GolonganUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
-  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   namaGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
+  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type GolonganOrderByRelevanceInput = {
@@ -304,15 +304,15 @@ export type GolonganOrderByRelevanceInput = {
   search: string;
 };
 
-export type GolonganTipeGolonganNamaGolonganCompoundUniqueInput = {
-  tipeGolongan: string;
+export type GolonganNamaGolonganTipeGolonganCompoundUniqueInput = {
   namaGolongan: string;
+  tipeGolongan: string;
 };
 
 export type GolonganCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  tipeGolongan?: Prisma.SortOrder;
   namaGolongan?: Prisma.SortOrder;
+  tipeGolongan?: Prisma.SortOrder;
 };
 
 export type GolonganAvgOrderByAggregateInput = {
@@ -321,14 +321,14 @@ export type GolonganAvgOrderByAggregateInput = {
 
 export type GolonganMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  tipeGolongan?: Prisma.SortOrder;
   namaGolongan?: Prisma.SortOrder;
+  tipeGolongan?: Prisma.SortOrder;
 };
 
 export type GolonganMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
-  tipeGolongan?: Prisma.SortOrder;
   namaGolongan?: Prisma.SortOrder;
+  tipeGolongan?: Prisma.SortOrder;
 };
 
 export type GolonganSumOrderByAggregateInput = {
@@ -367,14 +367,14 @@ export type GolonganUpdateOneRequiredWithoutWayangNestedInput = {
 };
 
 export type GolonganCreateWithoutWayangInput = {
-  tipeGolongan: string;
   namaGolongan: string;
+  tipeGolongan: string;
 };
 
 export type GolonganUncheckedCreateWithoutWayangInput = {
   id?: number;
-  tipeGolongan: string;
   namaGolongan: string;
+  tipeGolongan: string;
 };
 
 export type GolonganCreateOrConnectWithoutWayangInput = {
@@ -406,14 +406,14 @@ export type GolonganUpdateToOneWithWhereWithoutWayangInput = {
 };
 
 export type GolonganUpdateWithoutWayangInput = {
-  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   namaGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
+  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type GolonganUncheckedUpdateWithoutWayangInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number;
-  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
   namaGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
+  tipeGolongan?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 /**
@@ -460,8 +460,8 @@ export type GolonganSelect<
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
-    tipeGolongan?: boolean;
     namaGolongan?: boolean;
+    tipeGolongan?: boolean;
     wayang?: boolean | Prisma.Golongan$wayangArgs<ExtArgs>;
     _count?: boolean | Prisma.GolonganCountOutputTypeDefaultArgs<ExtArgs>;
   },
@@ -470,15 +470,15 @@ export type GolonganSelect<
 
 export type GolonganSelectScalar = {
   id?: boolean;
-  tipeGolongan?: boolean;
   namaGolongan?: boolean;
+  tipeGolongan?: boolean;
 };
 
 export type GolonganOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'tipeGolongan' | 'namaGolongan',
+  'id' | 'namaGolongan' | 'tipeGolongan',
   ExtArgs['result']['golongan']
 >;
 export type GolonganInclude<
@@ -500,8 +500,8 @@ export type $GolonganPayload<
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
       id: number;
-      tipeGolongan: string;
       namaGolongan: string;
+      tipeGolongan: string;
     },
     ExtArgs['result']['golongan']
   >;
@@ -1034,8 +1034,8 @@ export interface Prisma__GolonganClient<
  */
 export interface GolonganFieldRefs {
   readonly id: Prisma.FieldRef<'Golongan', 'Int'>;
-  readonly tipeGolongan: Prisma.FieldRef<'Golongan', 'String'>;
   readonly namaGolongan: Prisma.FieldRef<'Golongan', 'String'>;
+  readonly tipeGolongan: Prisma.FieldRef<'Golongan', 'String'>;
 }
 
 // Custom InputTypes

@@ -59,6 +59,9 @@ export const ModelName = {
   Penyimpanan: 'Penyimpanan',
   Wayang: 'Wayang',
   MediaWayang: 'MediaWayang',
+  Peminjam: 'Peminjam',
+  LogPeminjaman: 'LogPeminjaman',
+  LogKelola: 'LogKelola',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -88,8 +91,8 @@ export type AdminScalarFieldEnum =
 
 export const GolonganScalarFieldEnum = {
   id: 'id',
-  tipeGolongan: 'tipeGolongan',
   namaGolongan: 'namaGolongan',
+  tipeGolongan: 'tipeGolongan',
 } as const;
 
 export type GolonganScalarFieldEnum =
@@ -108,8 +111,8 @@ export const WayangScalarFieldEnum = {
   noWayang: 'noWayang',
   nama: 'nama',
   daerah: 'daerah',
-  deskripsi: 'deskripsi',
   cerita: 'cerita',
+  deskripsi: 'deskripsi',
   kondisi: 'kondisi',
   golonganId: 'golonganId',
   penyimpananId: 'penyimpananId',
@@ -120,8 +123,8 @@ export type WayangScalarFieldEnum =
 
 export const MediaWayangScalarFieldEnum = {
   id: 'id',
-  judul: 'judul',
-  jenisMedia: 'jenisMedia',
+  namaFile: 'namaFile',
+  jenis: 'jenis',
   keterangan: 'keterangan',
   fileUrl: 'fileUrl',
   wayangId: 'wayangId',
@@ -129,6 +132,39 @@ export const MediaWayangScalarFieldEnum = {
 
 export type MediaWayangScalarFieldEnum =
   (typeof MediaWayangScalarFieldEnum)[keyof typeof MediaWayangScalarFieldEnum];
+
+export const PeminjamScalarFieldEnum = {
+  id: 'id',
+  namaPeminjam: 'namaPeminjam',
+  alamat: 'alamat',
+  noHp: 'noHp',
+} as const;
+
+export type PeminjamScalarFieldEnum =
+  (typeof PeminjamScalarFieldEnum)[keyof typeof PeminjamScalarFieldEnum];
+
+export const LogPeminjamanScalarFieldEnum = {
+  id: 'id',
+  peminjamId: 'peminjamId',
+  wayangId: 'wayangId',
+  tanggalPinjam: 'tanggalPinjam',
+  tanggalKembali: 'tanggalKembali',
+  keterangan: 'keterangan',
+  status: 'status',
+} as const;
+
+export type LogPeminjamanScalarFieldEnum =
+  (typeof LogPeminjamanScalarFieldEnum)[keyof typeof LogPeminjamanScalarFieldEnum];
+
+export const LogKelolaScalarFieldEnum = {
+  id: 'id',
+  adminId: 'adminId',
+  wayangId: 'wayangId',
+  pesan: 'pesan',
+} as const;
+
+export type LogKelolaScalarFieldEnum =
+  (typeof LogKelolaScalarFieldEnum)[keyof typeof LogKelolaScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',
@@ -146,8 +182,8 @@ export type AdminOrderByRelevanceFieldEnum =
   (typeof AdminOrderByRelevanceFieldEnum)[keyof typeof AdminOrderByRelevanceFieldEnum];
 
 export const GolonganOrderByRelevanceFieldEnum = {
-  tipeGolongan: 'tipeGolongan',
   namaGolongan: 'namaGolongan',
+  tipeGolongan: 'tipeGolongan',
 } as const;
 
 export type GolonganOrderByRelevanceFieldEnum =
@@ -171,8 +207,8 @@ export const WayangOrderByRelevanceFieldEnum = {
   noWayang: 'noWayang',
   nama: 'nama',
   daerah: 'daerah',
-  deskripsi: 'deskripsi',
   cerita: 'cerita',
+  deskripsi: 'deskripsi',
   kondisi: 'kondisi',
 } as const;
 
@@ -180,11 +216,35 @@ export type WayangOrderByRelevanceFieldEnum =
   (typeof WayangOrderByRelevanceFieldEnum)[keyof typeof WayangOrderByRelevanceFieldEnum];
 
 export const MediaWayangOrderByRelevanceFieldEnum = {
-  judul: 'judul',
-  jenisMedia: 'jenisMedia',
+  namaFile: 'namaFile',
+  jenis: 'jenis',
   keterangan: 'keterangan',
   fileUrl: 'fileUrl',
 } as const;
 
 export type MediaWayangOrderByRelevanceFieldEnum =
   (typeof MediaWayangOrderByRelevanceFieldEnum)[keyof typeof MediaWayangOrderByRelevanceFieldEnum];
+
+export const PeminjamOrderByRelevanceFieldEnum = {
+  namaPeminjam: 'namaPeminjam',
+  alamat: 'alamat',
+  noHp: 'noHp',
+} as const;
+
+export type PeminjamOrderByRelevanceFieldEnum =
+  (typeof PeminjamOrderByRelevanceFieldEnum)[keyof typeof PeminjamOrderByRelevanceFieldEnum];
+
+export const LogPeminjamanOrderByRelevanceFieldEnum = {
+  keterangan: 'keterangan',
+  status: 'status',
+} as const;
+
+export type LogPeminjamanOrderByRelevanceFieldEnum =
+  (typeof LogPeminjamanOrderByRelevanceFieldEnum)[keyof typeof LogPeminjamanOrderByRelevanceFieldEnum];
+
+export const LogKelolaOrderByRelevanceFieldEnum = {
+  pesan: 'pesan',
+} as const;
+
+export type LogKelolaOrderByRelevanceFieldEnum =
+  (typeof LogKelolaOrderByRelevanceFieldEnum)[keyof typeof LogKelolaOrderByRelevanceFieldEnum];

@@ -7,6 +7,7 @@ const config = new ConfigService();
 const db = new DatabaseService(config);
 
 async function main() {
+  // Admin
   await db.admin.upsert({
     where: {
       username: 'admin',
@@ -18,6 +19,7 @@ async function main() {
     },
   });
 
+  // Data Golongan
   const golongan = [
     // SIMPINGAN KIRI
     { tipeGolongan: 'SIMPINGAN_KIRI', namaGolongan: 'Ringgit Raton' },
@@ -55,21 +57,31 @@ async function main() {
     { tipeGolongan: 'DUDHAHAN', namaGolongan: 'Ringgit Setanan' },
     { tipeGolongan: 'DUDHAHAN', namaGolongan: 'Ringgit Wanara' },
     { tipeGolongan: 'DUDHAHAN', namaGolongan: 'Ringgit Kiskenda' },
-    { tipeGolongan: 'DUDHAHAN', namaGolongan: 'Ringgit Jenawa Lekapala' },
-    { tipeGolongan: 'DUDHAHAN', namaGolongan: 'Ringgit Jenawa Pringgodani' },
+    {
+      tipeGolongan: 'DUDHAHAN',
+      namaGolongan: 'Ringgit Jenawa Lekapala',
+    },
+    {
+      tipeGolongan: 'DUDHAHAN',
+      namaGolongan: 'Ringgit Jenawa Pringgodani',
+    },
     { tipeGolongan: 'DUDHAHAN', namaGolongan: 'Ringgit Kewanan' },
   ];
 
+  // Seeder Golongan
   for (const item of golongan) {
     await db.golongan.upsert({
       where: {
-        tipeGolongan_namaGolongan: {
-          tipeGolongan: item.tipeGolongan,
+        namaGolongan_tipeGolongan: {
           namaGolongan: item.namaGolongan,
+          tipeGolongan: item.tipeGolongan,
         },
       },
       update: {},
-      create: item,
+      create: {
+        namaGolongan: item.namaGolongan,
+        tipeGolongan: item.tipeGolongan,
+      },
     });
   }
 

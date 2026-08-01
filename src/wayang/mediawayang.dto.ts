@@ -1,6 +1,6 @@
 export class MediaWayangDto {
-  judul!: string;
-  jenisMedia!: 'IMAGE' | 'VIDEO';
+  namaFile!: string;
+  jenis!: 'IMAGE' | 'VIDEO';
   keterangan?: string;
   fileUrl?: string;
 }

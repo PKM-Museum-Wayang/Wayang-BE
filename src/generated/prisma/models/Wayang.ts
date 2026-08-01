@@ -43,8 +43,8 @@ export type WayangMinAggregateOutputType = {
   noWayang: string | null;
   nama: string | null;
   daerah: string | null;
-  deskripsi: string | null;
   cerita: string | null;
+  deskripsi: string | null;
   kondisi: string | null;
   golonganId: number | null;
   penyimpananId: number | null;
@@ -55,8 +55,8 @@ export type WayangMaxAggregateOutputType = {
   noWayang: string | null;
   nama: string | null;
   daerah: string | null;
-  deskripsi: string | null;
   cerita: string | null;
+  deskripsi: string | null;
   kondisi: string | null;
   golonganId: number | null;
   penyimpananId: number | null;
@@ -67,8 +67,8 @@ export type WayangCountAggregateOutputType = {
   noWayang: number;
   nama: number;
   daerah: number;
-  deskripsi: number;
   cerita: number;
+  deskripsi: number;
   kondisi: number;
   golonganId: number;
   penyimpananId: number;
@@ -92,8 +92,8 @@ export type WayangMinAggregateInputType = {
   noWayang?: true;
   nama?: true;
   daerah?: true;
-  deskripsi?: true;
   cerita?: true;
+  deskripsi?: true;
   kondisi?: true;
   golonganId?: true;
   penyimpananId?: true;
@@ -104,8 +104,8 @@ export type WayangMaxAggregateInputType = {
   noWayang?: true;
   nama?: true;
   daerah?: true;
-  deskripsi?: true;
   cerita?: true;
+  deskripsi?: true;
   kondisi?: true;
   golonganId?: true;
   penyimpananId?: true;
@@ -116,8 +116,8 @@ export type WayangCountAggregateInputType = {
   noWayang?: true;
   nama?: true;
   daerah?: true;
-  deskripsi?: true;
   cerita?: true;
+  deskripsi?: true;
   kondisi?: true;
   golonganId?: true;
   penyimpananId?: true;
@@ -222,8 +222,8 @@ export type WayangGroupByOutputType = {
   noWayang: string;
   nama: string;
   daerah: string | null;
-  deskripsi: string | null;
   cerita: string | null;
+  deskripsi: string | null;
   kondisi: string | null;
   golonganId: number;
   penyimpananId: number;
@@ -255,8 +255,8 @@ export type WayangWhereInput = {
   noWayang?: Prisma.StringFilter<'Wayang'> | string;
   nama?: Prisma.StringFilter<'Wayang'> | string;
   daerah?: Prisma.StringNullableFilter<'Wayang'> | string | null;
-  deskripsi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
   cerita?: Prisma.StringNullableFilter<'Wayang'> | string | null;
+  deskripsi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
   kondisi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
   golonganId?: Prisma.IntFilter<'Wayang'> | number;
   penyimpananId?: Prisma.IntFilter<'Wayang'> | number;
@@ -269,6 +269,8 @@ export type WayangWhereInput = {
     Prisma.PenyimpananWhereInput
   >;
   media?: Prisma.MediaWayangListRelationFilter;
+  logKelola?: Prisma.LogKelolaListRelationFilter;
+  logPeminjaman?: Prisma.LogPeminjamanListRelationFilter;
 };
 
 export type WayangOrderByWithRelationInput = {
@@ -276,14 +278,16 @@ export type WayangOrderByWithRelationInput = {
   noWayang?: Prisma.SortOrder;
   nama?: Prisma.SortOrder;
   daerah?: Prisma.SortOrderInput | Prisma.SortOrder;
-  deskripsi?: Prisma.SortOrderInput | Prisma.SortOrder;
   cerita?: Prisma.SortOrderInput | Prisma.SortOrder;
+  deskripsi?: Prisma.SortOrderInput | Prisma.SortOrder;
   kondisi?: Prisma.SortOrderInput | Prisma.SortOrder;
   golonganId?: Prisma.SortOrder;
   penyimpananId?: Prisma.SortOrder;
   golongan?: Prisma.GolonganOrderByWithRelationInput;
   penyimpanan?: Prisma.PenyimpananOrderByWithRelationInput;
   media?: Prisma.MediaWayangOrderByRelationAggregateInput;
+  logKelola?: Prisma.LogKelolaOrderByRelationAggregateInput;
+  logPeminjaman?: Prisma.LogPeminjamanOrderByRelationAggregateInput;
   _relevance?: Prisma.WayangOrderByRelevanceInput;
 };
 
@@ -296,8 +300,8 @@ export type WayangWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.WayangWhereInput | Prisma.WayangWhereInput[];
     nama?: Prisma.StringFilter<'Wayang'> | string;
     daerah?: Prisma.StringNullableFilter<'Wayang'> | string | null;
-    deskripsi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
     cerita?: Prisma.StringNullableFilter<'Wayang'> | string | null;
+    deskripsi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
     kondisi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
     golonganId?: Prisma.IntFilter<'Wayang'> | number;
     penyimpananId?: Prisma.IntFilter<'Wayang'> | number;
@@ -310,6 +314,8 @@ export type WayangWhereUniqueInput = Prisma.AtLeast<
       Prisma.PenyimpananWhereInput
     >;
     media?: Prisma.MediaWayangListRelationFilter;
+    logKelola?: Prisma.LogKelolaListRelationFilter;
+    logPeminjaman?: Prisma.LogPeminjamanListRelationFilter;
   },
   'id' | 'noWayang'
 >;
@@ -319,8 +325,8 @@ export type WayangOrderByWithAggregationInput = {
   noWayang?: Prisma.SortOrder;
   nama?: Prisma.SortOrder;
   daerah?: Prisma.SortOrderInput | Prisma.SortOrder;
-  deskripsi?: Prisma.SortOrderInput | Prisma.SortOrder;
   cerita?: Prisma.SortOrderInput | Prisma.SortOrder;
+  deskripsi?: Prisma.SortOrderInput | Prisma.SortOrder;
   kondisi?: Prisma.SortOrderInput | Prisma.SortOrder;
   golonganId?: Prisma.SortOrder;
   penyimpananId?: Prisma.SortOrder;
@@ -343,11 +349,11 @@ export type WayangScalarWhereWithAggregatesInput = {
   noWayang?: Prisma.StringWithAggregatesFilter<'Wayang'> | string;
   nama?: Prisma.StringWithAggregatesFilter<'Wayang'> | string;
   daerah?: Prisma.StringNullableWithAggregatesFilter<'Wayang'> | string | null;
+  cerita?: Prisma.StringNullableWithAggregatesFilter<'Wayang'> | string | null;
   deskripsi?:
     | Prisma.StringNullableWithAggregatesFilter<'Wayang'>
     | string
     | null;
-  cerita?: Prisma.StringNullableWithAggregatesFilter<'Wayang'> | string | null;
   kondisi?: Prisma.StringNullableWithAggregatesFilter<'Wayang'> | string | null;
   golonganId?: Prisma.IntWithAggregatesFilter<'Wayang'> | number;
   penyimpananId?: Prisma.IntWithAggregatesFilter<'Wayang'> | number;
@@ -357,12 +363,14 @@ export type WayangCreateInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golongan: Prisma.GolonganCreateNestedOneWithoutWayangInput;
   penyimpanan: Prisma.PenyimpananCreateNestedOneWithoutWayangInput;
   media?: Prisma.MediaWayangCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangUncheckedCreateInput = {
@@ -370,24 +378,28 @@ export type WayangUncheckedCreateInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golonganId: number;
   penyimpananId: number;
   media?: Prisma.MediaWayangUncheckedCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaUncheckedCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangUpdateInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golongan?: Prisma.GolonganUpdateOneRequiredWithoutWayangNestedInput;
   penyimpanan?: Prisma.PenyimpananUpdateOneRequiredWithoutWayangNestedInput;
   media?: Prisma.MediaWayangUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangUncheckedUpdateInput = {
@@ -395,12 +407,14 @@ export type WayangUncheckedUpdateInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golonganId?: Prisma.IntFieldUpdateOperationsInput | number;
   penyimpananId?: Prisma.IntFieldUpdateOperationsInput | number;
   media?: Prisma.MediaWayangUncheckedUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUncheckedUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangCreateManyInput = {
@@ -408,8 +422,8 @@ export type WayangCreateManyInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golonganId: number;
   penyimpananId: number;
@@ -419,8 +433,8 @@ export type WayangUpdateManyMutationInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -429,8 +443,8 @@ export type WayangUncheckedUpdateManyInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golonganId?: Prisma.IntFieldUpdateOperationsInput | number;
   penyimpananId?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -459,8 +473,8 @@ export type WayangCountOrderByAggregateInput = {
   noWayang?: Prisma.SortOrder;
   nama?: Prisma.SortOrder;
   daerah?: Prisma.SortOrder;
-  deskripsi?: Prisma.SortOrder;
   cerita?: Prisma.SortOrder;
+  deskripsi?: Prisma.SortOrder;
   kondisi?: Prisma.SortOrder;
   golonganId?: Prisma.SortOrder;
   penyimpananId?: Prisma.SortOrder;
@@ -477,8 +491,8 @@ export type WayangMaxOrderByAggregateInput = {
   noWayang?: Prisma.SortOrder;
   nama?: Prisma.SortOrder;
   daerah?: Prisma.SortOrder;
-  deskripsi?: Prisma.SortOrder;
   cerita?: Prisma.SortOrder;
+  deskripsi?: Prisma.SortOrder;
   kondisi?: Prisma.SortOrder;
   golonganId?: Prisma.SortOrder;
   penyimpananId?: Prisma.SortOrder;
@@ -489,8 +503,8 @@ export type WayangMinOrderByAggregateInput = {
   noWayang?: Prisma.SortOrder;
   nama?: Prisma.SortOrder;
   daerah?: Prisma.SortOrder;
-  deskripsi?: Prisma.SortOrder;
   cerita?: Prisma.SortOrder;
+  deskripsi?: Prisma.SortOrder;
   kondisi?: Prisma.SortOrder;
   golonganId?: Prisma.SortOrder;
   penyimpananId?: Prisma.SortOrder;
@@ -709,15 +723,69 @@ export type WayangUpdateOneRequiredWithoutMediaNestedInput = {
   >;
 };
 
+export type WayangCreateNestedOneWithoutLogPeminjamanInput = {
+  create?: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogPeminjamanInput,
+    Prisma.WayangUncheckedCreateWithoutLogPeminjamanInput
+  >;
+  connectOrCreate?: Prisma.WayangCreateOrConnectWithoutLogPeminjamanInput;
+  connect?: Prisma.WayangWhereUniqueInput;
+};
+
+export type WayangUpdateOneRequiredWithoutLogPeminjamanNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogPeminjamanInput,
+    Prisma.WayangUncheckedCreateWithoutLogPeminjamanInput
+  >;
+  connectOrCreate?: Prisma.WayangCreateOrConnectWithoutLogPeminjamanInput;
+  upsert?: Prisma.WayangUpsertWithoutLogPeminjamanInput;
+  connect?: Prisma.WayangWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.WayangUpdateToOneWithWhereWithoutLogPeminjamanInput,
+      Prisma.WayangUpdateWithoutLogPeminjamanInput
+    >,
+    Prisma.WayangUncheckedUpdateWithoutLogPeminjamanInput
+  >;
+};
+
+export type WayangCreateNestedOneWithoutLogKelolaInput = {
+  create?: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogKelolaInput,
+    Prisma.WayangUncheckedCreateWithoutLogKelolaInput
+  >;
+  connectOrCreate?: Prisma.WayangCreateOrConnectWithoutLogKelolaInput;
+  connect?: Prisma.WayangWhereUniqueInput;
+};
+
+export type WayangUpdateOneRequiredWithoutLogKelolaNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogKelolaInput,
+    Prisma.WayangUncheckedCreateWithoutLogKelolaInput
+  >;
+  connectOrCreate?: Prisma.WayangCreateOrConnectWithoutLogKelolaInput;
+  upsert?: Prisma.WayangUpsertWithoutLogKelolaInput;
+  connect?: Prisma.WayangWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.WayangUpdateToOneWithWhereWithoutLogKelolaInput,
+      Prisma.WayangUpdateWithoutLogKelolaInput
+    >,
+    Prisma.WayangUncheckedUpdateWithoutLogKelolaInput
+  >;
+};
+
 export type WayangCreateWithoutGolonganInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   penyimpanan: Prisma.PenyimpananCreateNestedOneWithoutWayangInput;
   media?: Prisma.MediaWayangCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangUncheckedCreateWithoutGolonganInput = {
@@ -725,11 +793,13 @@ export type WayangUncheckedCreateWithoutGolonganInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   penyimpananId: number;
   media?: Prisma.MediaWayangUncheckedCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaUncheckedCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangCreateOrConnectWithoutGolonganInput = {
@@ -783,8 +853,8 @@ export type WayangScalarWhereInput = {
   noWayang?: Prisma.StringFilter<'Wayang'> | string;
   nama?: Prisma.StringFilter<'Wayang'> | string;
   daerah?: Prisma.StringNullableFilter<'Wayang'> | string | null;
-  deskripsi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
   cerita?: Prisma.StringNullableFilter<'Wayang'> | string | null;
+  deskripsi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
   kondisi?: Prisma.StringNullableFilter<'Wayang'> | string | null;
   golonganId?: Prisma.IntFilter<'Wayang'> | number;
   penyimpananId?: Prisma.IntFilter<'Wayang'> | number;
@@ -794,11 +864,13 @@ export type WayangCreateWithoutPenyimpananInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golongan: Prisma.GolonganCreateNestedOneWithoutWayangInput;
   media?: Prisma.MediaWayangCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangUncheckedCreateWithoutPenyimpananInput = {
@@ -806,11 +878,13 @@ export type WayangUncheckedCreateWithoutPenyimpananInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golonganId: number;
   media?: Prisma.MediaWayangUncheckedCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaUncheckedCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangCreateOrConnectWithoutPenyimpananInput = {
@@ -860,11 +934,13 @@ export type WayangCreateWithoutMediaInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golongan: Prisma.GolonganCreateNestedOneWithoutWayangInput;
   penyimpanan: Prisma.PenyimpananCreateNestedOneWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangUncheckedCreateWithoutMediaInput = {
@@ -872,11 +948,13 @@ export type WayangUncheckedCreateWithoutMediaInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golonganId: number;
   penyimpananId: number;
+  logKelola?: Prisma.LogKelolaUncheckedCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedCreateNestedManyWithoutWayangInput;
 };
 
 export type WayangCreateOrConnectWithoutMediaInput = {
@@ -911,11 +989,13 @@ export type WayangUpdateWithoutMediaInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golongan?: Prisma.GolonganUpdateOneRequiredWithoutWayangNestedInput;
   penyimpanan?: Prisma.PenyimpananUpdateOneRequiredWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangUncheckedUpdateWithoutMediaInput = {
@@ -923,11 +1003,177 @@ export type WayangUncheckedUpdateWithoutMediaInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golonganId?: Prisma.IntFieldUpdateOperationsInput | number;
   penyimpananId?: Prisma.IntFieldUpdateOperationsInput | number;
+  logKelola?: Prisma.LogKelolaUncheckedUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedUpdateManyWithoutWayangNestedInput;
+};
+
+export type WayangCreateWithoutLogPeminjamanInput = {
+  noWayang: string;
+  nama: string;
+  daerah?: string | null;
+  cerita?: string | null;
+  deskripsi?: string | null;
+  kondisi?: string | null;
+  golongan: Prisma.GolonganCreateNestedOneWithoutWayangInput;
+  penyimpanan: Prisma.PenyimpananCreateNestedOneWithoutWayangInput;
+  media?: Prisma.MediaWayangCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaCreateNestedManyWithoutWayangInput;
+};
+
+export type WayangUncheckedCreateWithoutLogPeminjamanInput = {
+  id?: number;
+  noWayang: string;
+  nama: string;
+  daerah?: string | null;
+  cerita?: string | null;
+  deskripsi?: string | null;
+  kondisi?: string | null;
+  golonganId: number;
+  penyimpananId: number;
+  media?: Prisma.MediaWayangUncheckedCreateNestedManyWithoutWayangInput;
+  logKelola?: Prisma.LogKelolaUncheckedCreateNestedManyWithoutWayangInput;
+};
+
+export type WayangCreateOrConnectWithoutLogPeminjamanInput = {
+  where: Prisma.WayangWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogPeminjamanInput,
+    Prisma.WayangUncheckedCreateWithoutLogPeminjamanInput
+  >;
+};
+
+export type WayangUpsertWithoutLogPeminjamanInput = {
+  update: Prisma.XOR<
+    Prisma.WayangUpdateWithoutLogPeminjamanInput,
+    Prisma.WayangUncheckedUpdateWithoutLogPeminjamanInput
+  >;
+  create: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogPeminjamanInput,
+    Prisma.WayangUncheckedCreateWithoutLogPeminjamanInput
+  >;
+  where?: Prisma.WayangWhereInput;
+};
+
+export type WayangUpdateToOneWithWhereWithoutLogPeminjamanInput = {
+  where?: Prisma.WayangWhereInput;
+  data: Prisma.XOR<
+    Prisma.WayangUpdateWithoutLogPeminjamanInput,
+    Prisma.WayangUncheckedUpdateWithoutLogPeminjamanInput
+  >;
+};
+
+export type WayangUpdateWithoutLogPeminjamanInput = {
+  noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
+  nama?: Prisma.StringFieldUpdateOperationsInput | string;
+  daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  golongan?: Prisma.GolonganUpdateOneRequiredWithoutWayangNestedInput;
+  penyimpanan?: Prisma.PenyimpananUpdateOneRequiredWithoutWayangNestedInput;
+  media?: Prisma.MediaWayangUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUpdateManyWithoutWayangNestedInput;
+};
+
+export type WayangUncheckedUpdateWithoutLogPeminjamanInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number;
+  noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
+  nama?: Prisma.StringFieldUpdateOperationsInput | string;
+  daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  golonganId?: Prisma.IntFieldUpdateOperationsInput | number;
+  penyimpananId?: Prisma.IntFieldUpdateOperationsInput | number;
+  media?: Prisma.MediaWayangUncheckedUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUncheckedUpdateManyWithoutWayangNestedInput;
+};
+
+export type WayangCreateWithoutLogKelolaInput = {
+  noWayang: string;
+  nama: string;
+  daerah?: string | null;
+  cerita?: string | null;
+  deskripsi?: string | null;
+  kondisi?: string | null;
+  golongan: Prisma.GolonganCreateNestedOneWithoutWayangInput;
+  penyimpanan: Prisma.PenyimpananCreateNestedOneWithoutWayangInput;
+  media?: Prisma.MediaWayangCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanCreateNestedManyWithoutWayangInput;
+};
+
+export type WayangUncheckedCreateWithoutLogKelolaInput = {
+  id?: number;
+  noWayang: string;
+  nama: string;
+  daerah?: string | null;
+  cerita?: string | null;
+  deskripsi?: string | null;
+  kondisi?: string | null;
+  golonganId: number;
+  penyimpananId: number;
+  media?: Prisma.MediaWayangUncheckedCreateNestedManyWithoutWayangInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedCreateNestedManyWithoutWayangInput;
+};
+
+export type WayangCreateOrConnectWithoutLogKelolaInput = {
+  where: Prisma.WayangWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogKelolaInput,
+    Prisma.WayangUncheckedCreateWithoutLogKelolaInput
+  >;
+};
+
+export type WayangUpsertWithoutLogKelolaInput = {
+  update: Prisma.XOR<
+    Prisma.WayangUpdateWithoutLogKelolaInput,
+    Prisma.WayangUncheckedUpdateWithoutLogKelolaInput
+  >;
+  create: Prisma.XOR<
+    Prisma.WayangCreateWithoutLogKelolaInput,
+    Prisma.WayangUncheckedCreateWithoutLogKelolaInput
+  >;
+  where?: Prisma.WayangWhereInput;
+};
+
+export type WayangUpdateToOneWithWhereWithoutLogKelolaInput = {
+  where?: Prisma.WayangWhereInput;
+  data: Prisma.XOR<
+    Prisma.WayangUpdateWithoutLogKelolaInput,
+    Prisma.WayangUncheckedUpdateWithoutLogKelolaInput
+  >;
+};
+
+export type WayangUpdateWithoutLogKelolaInput = {
+  noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
+  nama?: Prisma.StringFieldUpdateOperationsInput | string;
+  daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  golongan?: Prisma.GolonganUpdateOneRequiredWithoutWayangNestedInput;
+  penyimpanan?: Prisma.PenyimpananUpdateOneRequiredWithoutWayangNestedInput;
+  media?: Prisma.MediaWayangUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUpdateManyWithoutWayangNestedInput;
+};
+
+export type WayangUncheckedUpdateWithoutLogKelolaInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number;
+  noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
+  nama?: Prisma.StringFieldUpdateOperationsInput | string;
+  daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  golonganId?: Prisma.IntFieldUpdateOperationsInput | number;
+  penyimpananId?: Prisma.IntFieldUpdateOperationsInput | number;
+  media?: Prisma.MediaWayangUncheckedUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangCreateManyGolonganInput = {
@@ -935,8 +1181,8 @@ export type WayangCreateManyGolonganInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   penyimpananId: number;
 };
@@ -945,11 +1191,13 @@ export type WayangUpdateWithoutGolonganInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   penyimpanan?: Prisma.PenyimpananUpdateOneRequiredWithoutWayangNestedInput;
   media?: Prisma.MediaWayangUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangUncheckedUpdateWithoutGolonganInput = {
@@ -957,11 +1205,13 @@ export type WayangUncheckedUpdateWithoutGolonganInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   penyimpananId?: Prisma.IntFieldUpdateOperationsInput | number;
   media?: Prisma.MediaWayangUncheckedUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUncheckedUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangUncheckedUpdateManyWithoutGolonganInput = {
@@ -969,8 +1219,8 @@ export type WayangUncheckedUpdateManyWithoutGolonganInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   penyimpananId?: Prisma.IntFieldUpdateOperationsInput | number;
 };
@@ -980,8 +1230,8 @@ export type WayangCreateManyPenyimpananInput = {
   noWayang: string;
   nama: string;
   daerah?: string | null;
-  deskripsi?: string | null;
   cerita?: string | null;
+  deskripsi?: string | null;
   kondisi?: string | null;
   golonganId: number;
 };
@@ -990,11 +1240,13 @@ export type WayangUpdateWithoutPenyimpananInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golongan?: Prisma.GolonganUpdateOneRequiredWithoutWayangNestedInput;
   media?: Prisma.MediaWayangUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangUncheckedUpdateWithoutPenyimpananInput = {
@@ -1002,11 +1254,13 @@ export type WayangUncheckedUpdateWithoutPenyimpananInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golonganId?: Prisma.IntFieldUpdateOperationsInput | number;
   media?: Prisma.MediaWayangUncheckedUpdateManyWithoutWayangNestedInput;
+  logKelola?: Prisma.LogKelolaUncheckedUpdateManyWithoutWayangNestedInput;
+  logPeminjaman?: Prisma.LogPeminjamanUncheckedUpdateManyWithoutWayangNestedInput;
 };
 
 export type WayangUncheckedUpdateManyWithoutPenyimpananInput = {
@@ -1014,8 +1268,8 @@ export type WayangUncheckedUpdateManyWithoutPenyimpananInput = {
   noWayang?: Prisma.StringFieldUpdateOperationsInput | string;
   nama?: Prisma.StringFieldUpdateOperationsInput | string;
   daerah?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   cerita?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  deskripsi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   kondisi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   golonganId?: Prisma.IntFieldUpdateOperationsInput | number;
 };
@@ -1026,6 +1280,8 @@ export type WayangUncheckedUpdateManyWithoutPenyimpananInput = {
 
 export type WayangCountOutputType = {
   media: number;
+  logKelola: number;
+  logPeminjaman: number;
 };
 
 export type WayangCountOutputTypeSelect<
@@ -1033,6 +1289,8 @@ export type WayangCountOutputTypeSelect<
     runtime.Types.Extensions.DefaultArgs,
 > = {
   media?: boolean | WayangCountOutputTypeCountMediaArgs;
+  logKelola?: boolean | WayangCountOutputTypeCountLogKelolaArgs;
+  logPeminjaman?: boolean | WayangCountOutputTypeCountLogPeminjamanArgs;
 };
 
 /**
@@ -1058,6 +1316,26 @@ export type WayangCountOutputTypeCountMediaArgs<
   where?: Prisma.MediaWayangWhereInput;
 };
 
+/**
+ * WayangCountOutputType without action
+ */
+export type WayangCountOutputTypeCountLogKelolaArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.LogKelolaWhereInput;
+};
+
+/**
+ * WayangCountOutputType without action
+ */
+export type WayangCountOutputTypeCountLogPeminjamanArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.LogPeminjamanWhereInput;
+};
+
 export type WayangSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -1067,14 +1345,16 @@ export type WayangSelect<
     noWayang?: boolean;
     nama?: boolean;
     daerah?: boolean;
-    deskripsi?: boolean;
     cerita?: boolean;
+    deskripsi?: boolean;
     kondisi?: boolean;
     golonganId?: boolean;
     penyimpananId?: boolean;
     golongan?: boolean | Prisma.GolonganDefaultArgs<ExtArgs>;
     penyimpanan?: boolean | Prisma.PenyimpananDefaultArgs<ExtArgs>;
     media?: boolean | Prisma.Wayang$mediaArgs<ExtArgs>;
+    logKelola?: boolean | Prisma.Wayang$logKelolaArgs<ExtArgs>;
+    logPeminjaman?: boolean | Prisma.Wayang$logPeminjamanArgs<ExtArgs>;
     _count?: boolean | Prisma.WayangCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['wayang']
@@ -1085,8 +1365,8 @@ export type WayangSelectScalar = {
   noWayang?: boolean;
   nama?: boolean;
   daerah?: boolean;
-  deskripsi?: boolean;
   cerita?: boolean;
+  deskripsi?: boolean;
   kondisi?: boolean;
   golonganId?: boolean;
   penyimpananId?: boolean;
@@ -1100,8 +1380,8 @@ export type WayangOmit<
   | 'noWayang'
   | 'nama'
   | 'daerah'
-  | 'deskripsi'
   | 'cerita'
+  | 'deskripsi'
   | 'kondisi'
   | 'golonganId'
   | 'penyimpananId',
@@ -1114,6 +1394,8 @@ export type WayangInclude<
   golongan?: boolean | Prisma.GolonganDefaultArgs<ExtArgs>;
   penyimpanan?: boolean | Prisma.PenyimpananDefaultArgs<ExtArgs>;
   media?: boolean | Prisma.Wayang$mediaArgs<ExtArgs>;
+  logKelola?: boolean | Prisma.Wayang$logKelolaArgs<ExtArgs>;
+  logPeminjaman?: boolean | Prisma.Wayang$logPeminjamanArgs<ExtArgs>;
   _count?: boolean | Prisma.WayangCountOutputTypeDefaultArgs<ExtArgs>;
 };
 
@@ -1126,6 +1408,8 @@ export type $WayangPayload<
     golongan: Prisma.$GolonganPayload<ExtArgs>;
     penyimpanan: Prisma.$PenyimpananPayload<ExtArgs>;
     media: Prisma.$MediaWayangPayload<ExtArgs>[];
+    logKelola: Prisma.$LogKelolaPayload<ExtArgs>[];
+    logPeminjaman: Prisma.$LogPeminjamanPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1133,8 +1417,8 @@ export type $WayangPayload<
       noWayang: string;
       nama: string;
       daerah: string | null;
-      deskripsi: string | null;
       cerita: string | null;
+      deskripsi: string | null;
       kondisi: string | null;
       golonganId: number;
       penyimpananId: number;
@@ -1655,6 +1939,28 @@ export interface Prisma__WayangClient<
       >
     | Null
   >;
+  logKelola<T extends Prisma.Wayang$logKelolaArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Wayang$logKelolaArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$LogKelolaPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  logPeminjaman<T extends Prisma.Wayang$logPeminjamanArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Wayang$logPeminjamanArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$LogPeminjamanPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1701,8 +2007,8 @@ export interface WayangFieldRefs {
   readonly noWayang: Prisma.FieldRef<'Wayang', 'String'>;
   readonly nama: Prisma.FieldRef<'Wayang', 'String'>;
   readonly daerah: Prisma.FieldRef<'Wayang', 'String'>;
-  readonly deskripsi: Prisma.FieldRef<'Wayang', 'String'>;
   readonly cerita: Prisma.FieldRef<'Wayang', 'String'>;
+  readonly deskripsi: Prisma.FieldRef<'Wayang', 'String'>;
   readonly kondisi: Prisma.FieldRef<'Wayang', 'String'>;
   readonly golonganId: Prisma.FieldRef<'Wayang', 'Int'>;
   readonly penyimpananId: Prisma.FieldRef<'Wayang', 'Int'>;
@@ -2132,6 +2438,68 @@ export type Wayang$mediaArgs<
   distinct?:
     | Prisma.MediaWayangScalarFieldEnum
     | Prisma.MediaWayangScalarFieldEnum[];
+};
+
+/**
+ * Wayang.logKelola
+ */
+export type Wayang$logKelolaArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the LogKelola
+   */
+  select?: Prisma.LogKelolaSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the LogKelola
+   */
+  omit?: Prisma.LogKelolaOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogKelolaInclude<ExtArgs> | null;
+  where?: Prisma.LogKelolaWhereInput;
+  orderBy?:
+    | Prisma.LogKelolaOrderByWithRelationInput
+    | Prisma.LogKelolaOrderByWithRelationInput[];
+  cursor?: Prisma.LogKelolaWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.LogKelolaScalarFieldEnum
+    | Prisma.LogKelolaScalarFieldEnum[];
+};
+
+/**
+ * Wayang.logPeminjaman
+ */
+export type Wayang$logPeminjamanArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the LogPeminjaman
+   */
+  select?: Prisma.LogPeminjamanSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the LogPeminjaman
+   */
+  omit?: Prisma.LogPeminjamanOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogPeminjamanInclude<ExtArgs> | null;
+  where?: Prisma.LogPeminjamanWhereInput;
+  orderBy?:
+    | Prisma.LogPeminjamanOrderByWithRelationInput
+    | Prisma.LogPeminjamanOrderByWithRelationInput[];
+  cursor?: Prisma.LogPeminjamanWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.LogPeminjamanScalarFieldEnum
+    | Prisma.LogPeminjamanScalarFieldEnum[];
 };
 
 /**
