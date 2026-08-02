@@ -99,10 +99,18 @@ export class WayangService {
 
   async findAll() {
     return this.database.wayang.findMany({
-      include: {
-        media: true,
-        golongan: true,
-        penyimpanan: true,
+      select: {
+        id: true,
+        noWayang: true,
+        nama: true,
+        golonganId: true,
+        penyimpananId: true,
+
+        media: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
