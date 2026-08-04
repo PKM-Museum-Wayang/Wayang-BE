@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `wayang` ADD COLUMN `noWayang` VARCHAR(191) NOT NULL;
+ALTER TABLE `Wayang` ADD COLUMN `noWayang` VARCHAR(191) NOT NULL;
 
 -- CreateIndex
 CREATE UNIQUE INDEX `Wayang_noWayang_key` ON `Wayang`(`noWayang`);
