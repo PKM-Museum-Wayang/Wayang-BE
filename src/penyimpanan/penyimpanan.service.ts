@@ -6,43 +6,107 @@ import { PenyimpananDto } from './penyimpanan.dto';
 export class PenyimpananService {
   constructor(private readonly db: DatabaseService) {}
 
-  create(body: PenyimpananDto) {
-    return this.db.penyimpanan.create({
-      data: {
-        namaKotak: body.namaKotak,
-      },
-    });
+  async create(body: PenyimpananDto) {
+    try {
+      return await this.db.penyimpanan.create({
+        data: {
+          namaKotak: body.namaKotak,
+        },
+      });
+    } catch {
+      throw new Error('DATABASE_ERROR');
+    }
   }
 
-  findAll() {
-    return this.db.penyimpanan.findMany({
-      include: {
-        wayang: true,
-      },
-    });
+  async findAll() {
+    try {
+      return await this.db.penyimpanan.findMany({
+        include: {
+          wayang: true,
+        },
+      });
+    } catch {
+      throw new Error('DATABASE_ERROR');
+    }
   }
 
-  findOne(id: number) {
-    return this.db.penyimpanan.findUnique({
-      where: { id },
-      include: {
-        wayang: true,
-      },
-    });
+  async findOne(id: number) {
+    try {
+      const data = await this.db.penyimpanan.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          wayang: true,
+        },
+      });
+
+      if (!data) {
+        throw new Error('PENYIMPANAN_NOT_FOUND');
+      }
+
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      throw new Error('DATABASE_ERROR');
+    }
   }
 
-  update(id: number, body: PenyimpananDto) {
-    return this.db.penyimpanan.update({
-      where: { id },
-      data: {
-        namaKotak: body.namaKotak,
-      },
-    });
+  async update(id: number, body: PenyimpananDto) {
+    try {
+      const data = await this.db.penyimpanan.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!data) {
+        throw new Error('PENYIMPANAN_NOT_FOUND');
+      }
+
+      return await this.db.penyimpanan.update({
+        where: {
+          id,
+        },
+        data: {
+          namaKotak: body.namaKotak,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      throw new Error('DATABASE_ERROR');
+    }
   }
 
-  remove(id: number) {
-    return this.db.penyimpanan.delete({
-      where: { id },
-    });
+  async remove(id: number) {
+    try {
+      const data = await this.db.penyimpanan.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!data) {
+        throw new Error('PENYIMPANAN_NOT_FOUND');
+      }
+
+      await this.db.penyimpanan.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      throw new Error('DATABASE_ERROR');
+    }
   }
 }

@@ -9,6 +9,9 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,10 +26,56 @@ export class WayangController {
   constructor(private readonly wayangService: WayangService) {}
 
   @Post()
-  create(@Body() body: WayangDto) {
-    return this.wayangService.create(body);
-  }
+  async create(@Body() body: WayangDto) {
+    try {
+      const data = await this.wayangService.create(body);
 
+      return {
+        success: true,
+        statusCode: 201,
+        message: 'Wayang created successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'INVALID_REQUEST':
+            throw new BadRequestException({
+              success: false,
+              statusCode: 400,
+              message: 'Invalid request.',
+            });
+
+          case 'GOLONGAN_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Golongan not found.',
+            });
+
+          case 'INVALID_GOLONGAN_TYPE':
+            throw new BadRequestException({
+              success: false,
+              statusCode: 400,
+              message: 'Invalid golongan type.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
+  }
   @Post(':id/media')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -35,32 +84,176 @@ export class WayangController {
         filename: (req, file, cb) => {
           const unique =
             Date.now() + '-' + Math.random().toString(36).substring(7);
+
           cb(null, unique + extname(file.originalname));
         },
       }),
     }),
   )
-  addMedia(
+  async addMedia(
     @Param('id') id: string,
     @Body() body: MediaWayangDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.wayangService.addMedia(Number(id), body, file);
+    try {
+      const data = await this.wayangService.addMedia(Number(id), body, file);
+
+      return {
+        success: true,
+        statusCode: 201,
+        message: 'Media added successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          case 'FILE_REQUIRED':
+            throw new BadRequestException({
+              success: false,
+              statusCode: 400,
+              message: 'File is required.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 
   @Get()
-  findAll(@Query() query: WayangQueryDto) {
-    return this.wayangService.findAll(query);
+  async findAll(@Query() query: WayangQueryDto) {
+    try {
+      const data = await this.wayangService.findAll(query);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Wayang retrieved successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new InternalServerErrorException({
+          success: false,
+          statusCode: 500,
+          message: 'Internal server error.',
+        });
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.wayangService.findOne(Number(id));
+  async findOne(@Param('id') id: string) {
+    try {
+      const data = await this.wayangService.findOne(Number(id));
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Wayang retrieved successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: WayangDto) {
-    return this.wayangService.update(Number(id), body);
+  async update(@Param('id') id: string, @Body() body: WayangDto) {
+    try {
+      const data = await this.wayangService.update(Number(id), body);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Wayang updated successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          case 'GOLONGAN_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Golongan not found.',
+            });
+
+          case 'PENYIMPANAN_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Penyimpanan not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 
   @Patch('media/:mediaId')
@@ -77,35 +270,197 @@ export class WayangController {
       }),
     }),
   )
-  updateMedia(
+  async updateMedia(
     @Param('mediaId') mediaId: string,
     @Body() body: MediaWayangDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.wayangService.updateMedia(Number(mediaId), body, file);
+    try {
+      const data = await this.wayangService.updateMedia(
+        Number(mediaId),
+        body,
+        file,
+      );
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Media updated successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'MEDIA_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Media not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wayangService.remove(Number(id));
+  async remove(@Param('id') id: string) {
+    try {
+      await this.wayangService.remove(Number(id));
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Wayang deleted successfully.',
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
   @Delete('media/:mediaId')
-  removeMedia(@Param('mediaId') mediaId: string) {
-    return this.wayangService.removeMedia(Number(mediaId));
+  async removeMedia(@Param('mediaId') mediaId: string) {
+    try {
+      await this.wayangService.removeMedia(Number(mediaId));
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Media deleted successfully.',
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'MEDIA_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Media not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 
   @Get('media/:mediaId')
-  findMedia(@Param('mediaId') mediaId: string) {
-    return this.wayangService.findMedia(Number(mediaId));
+  async findMedia(@Param('mediaId') mediaId: string) {
+    try {
+      const data = await this.wayangService.findMedia(Number(mediaId));
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Media retrieved successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'MEDIA_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Media not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 
   @Get('golongan/:golonganId')
-  findGolongan(@Param('golonganId') golonganId: string) {
-    return this.wayangService.findGolongan(Number(golonganId));
-  }
+  async findGolongan(@Param('golonganId') golonganId: string) {
+    try {
+      const data = await this.wayangService.findGolongan(Number(golonganId));
 
-  @Get('penyimpanan/:penyimpananId')
-  findPenyimpanan(@Param('penyimpananId') penyimpananId: string) {
-    return this.wayangService.findPenyimpanan(Number(penyimpananId));
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Golongan retrieved successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'GOLONGAN_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Golongan not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
   }
 }
