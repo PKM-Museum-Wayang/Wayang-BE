@@ -11,11 +11,15 @@ import {
 import { PeminjamanService } from './peminjaman.service';
 import { CreatePeminjamanDto } from './peminjam.dto';
 
+import { JwtAuthGuard } from 'src/guards/jwtguard';
+import { UseGuards } from '@nestjs/common';
+
 @Controller('peminjaman')
 export class PeminjamanController {
   constructor(private readonly peminjamanService: PeminjamanService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() body: CreatePeminjamanDto) {
     try {
       const data = await this.peminjamanService.create(body);
