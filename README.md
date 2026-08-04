@@ -261,6 +261,7 @@ application/json
 
 ```json
 {
+  "gaya": "purwo yogyakarta"
   "nama": "Arjuna",
   "daerah": "Yogyakarta",
   "deskripsi": "Wayang Kulit",
