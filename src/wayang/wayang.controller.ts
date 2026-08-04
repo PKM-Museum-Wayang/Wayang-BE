@@ -14,6 +14,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { JwtAuthGuard } from 'src/guards/jwtguard';
+import { UseGuards } from '@nestjs/common';
+
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -26,6 +29,7 @@ export class WayangController {
   constructor(private readonly wayangService: WayangService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() body: WayangDto) {
     try {
       const data = await this.wayangService.create(body);
@@ -77,6 +81,7 @@ export class WayangController {
     }
   }
   @Post(':id/media')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -205,6 +210,7 @@ export class WayangController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() body: WayangDto) {
     try {
       const data = await this.wayangService.update(Number(id), body);
@@ -257,6 +263,7 @@ export class WayangController {
   }
 
   @Patch('media/:mediaId')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -316,6 +323,7 @@ export class WayangController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: string) {
     try {
       await this.wayangService.remove(Number(id));
@@ -352,6 +360,7 @@ export class WayangController {
     }
   }
   @Delete('media/:mediaId')
+  @UseGuards(JwtAuthGuard)
   async removeMedia(@Param('mediaId') mediaId: string) {
     try {
       await this.wayangService.removeMedia(Number(mediaId));
