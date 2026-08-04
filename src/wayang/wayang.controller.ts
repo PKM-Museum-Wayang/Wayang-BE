@@ -8,6 +8,7 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -16,6 +17,7 @@ import { extname } from 'path';
 import { WayangService } from './wayang.service';
 import { MediaWayangDto } from './mediawayang.dto';
 import { WayangDto } from './wayang,.dto';
+import { WayangQueryDto } from './wayangquery.dto';
 @Controller('wayang')
 export class WayangController {
   constructor(private readonly wayangService: WayangService) {}
@@ -47,8 +49,8 @@ export class WayangController {
   }
 
   @Get()
-  findAll() {
-    return this.wayangService.findAll();
+  findAll(@Query() query: WayangQueryDto) {
+    return this.wayangService.findAll(query);
   }
 
   @Get(':id')
@@ -90,5 +92,20 @@ export class WayangController {
   @Delete('media/:mediaId')
   removeMedia(@Param('mediaId') mediaId: string) {
     return this.wayangService.removeMedia(Number(mediaId));
+  }
+
+  @Get('media/:mediaId')
+  findMedia(@Param('mediaId') mediaId: string) {
+    return this.wayangService.findMedia(Number(mediaId));
+  }
+
+  @Get('golongan/:golonganId')
+  findGolongan(@Param('golonganId') golonganId: string) {
+    return this.wayangService.findGolongan(Number(golonganId));
+  }
+
+  @Get('penyimpanan/:penyimpananId')
+  findPenyimpanan(@Param('penyimpananId') penyimpananId: string) {
+    return this.wayangService.findPenyimpanan(Number(penyimpananId));
   }
 }

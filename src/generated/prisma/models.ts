@@ -8,6 +8,11 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Admin.js';
+export type * from './models/Golongan.js';
+export type * from './models/Penyimpanan.js';
 export type * from './models/Wayang.js';
 export type * from './models/MediaWayang.js';
+export type * from './models/Peminjam.js';
+export type * from './models/LogPeminjaman.js';
+export type * from './models/LogKelola.js';
 export type * from './commonInputTypes.js';

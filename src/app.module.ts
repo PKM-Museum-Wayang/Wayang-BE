@@ -5,6 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { WayangModule } from './wayang/wayang.module';
+import { GolonganModule } from './golongan/golongan.module';
+import { PenyimpananModule } from './penyimpanan/penyimpanan.module';
+import { PeminjamanModule } from './peminjaman/peminjaman.module';
 
 @Module({
   imports: [
@@ -14,6 +17,9 @@ import { WayangModule } from './wayang/wayang.module';
     DatabaseModule,
     AuthModule,
     WayangModule,
+    GolonganModule,
+    PenyimpananModule,
+    PeminjamanModule,
   ],
   controllers: [AppController],
   providers: [AppService],

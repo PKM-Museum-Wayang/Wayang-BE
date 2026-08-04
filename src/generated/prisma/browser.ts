@@ -22,6 +22,16 @@ export * from './enums.js';
  */
 export type Admin = Prisma.AdminModel;
 /**
+ * Model Golongan
+ *
+ */
+export type Golongan = Prisma.GolonganModel;
+/**
+ * Model Penyimpanan
+ *
+ */
+export type Penyimpanan = Prisma.PenyimpananModel;
+/**
  * Model Wayang
  *
  */
@@ -31,3 +41,18 @@ export type Wayang = Prisma.WayangModel;
  *
  */
 export type MediaWayang = Prisma.MediaWayangModel;
+/**
+ * Model Peminjam
+ *
+ */
+export type Peminjam = Prisma.PeminjamModel;
+/**
+ * Model LogPeminjaman
+ *
+ */
+export type LogPeminjaman = Prisma.LogPeminjamanModel;
+/**
+ * Model LogKelola
+ *
+ */
+export type LogKelola = Prisma.LogKelolaModel;
