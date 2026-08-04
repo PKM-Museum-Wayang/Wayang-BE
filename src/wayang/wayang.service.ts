@@ -15,6 +15,18 @@ export class WayangService {
       throw new Error('INVALID_REQUEST');
     }
 
+    const gayaMap: Record<string, string> = {
+      'Purwo Yogyakarta': 'PY',
+      'Purwo Surakarta': 'PS',
+      'Purwo Kedu': 'PK',
+    };
+
+    const kodeGaya = gayaMap[body.gaya];
+
+    if (!kodeGaya) {
+      throw new Error('INVALID_GAYA');
+    }
+
     const golongan = await this.database.golongan.findUnique({
       where: {
         id: body.golonganId,
@@ -42,19 +54,19 @@ export class WayangService {
 
     const urutanGolongan = String(countGolongan + 1).padStart(2, '0');
 
-    const kodeMap: Record<string, string> = {
+    const kodeGolonganMap: Record<string, string> = {
       SIMPINGAN_KIRI: 'KI',
       SIMPINGAN_KANAN: 'KA',
-      DUDHAHAN: 'DU',
+      DUDHAHAN: 'D',
     };
 
-    const kodeGolongan = kodeMap[golongan.tipeGolongan];
+    const kodeGolongan = kodeGolonganMap[golongan.tipeGolongan];
 
     if (!kodeGolongan) {
       throw new Error('INVALID_GOLONGAN_TYPE');
     }
 
-    const noWayang = `${urutanGolongan}-${kodeGolongan}-${body.penyimpananId}-${urutanDalamKotak}`;
+    const noWayang = `${kodeGaya} ${urutanGolongan} ${kodeGolongan} ${body.penyimpananId} - ${urutanDalamKotak}`;
 
     return this.database.wayang.create({
       data: {
