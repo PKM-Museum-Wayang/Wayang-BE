@@ -1,15 +1,31 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  const configService = app.get(ConfigService);
+
   app.useStaticAssets(join(process.cwd(), 'storage'), {
     prefix: '/storage',
   });
 
-  await app.listen(3000);
+  const frontendUrl =
+    configService.get<string>('FRONTEND_URL')?.split(',') ?? [];
+
+  app.enableCors({
+    origin: frontendUrl,
+    credentials: true,
+  });
+
+  const port = configService.get<number>('PORT') ?? 3000;
+
+  await app.listen(port);
 }
-bootstrap();
+
+bootstrap().catch((error) => {
+  console.error(error);
+});
