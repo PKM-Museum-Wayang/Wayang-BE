@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { WayangDto } from './wayang,.dto';
 import { MediaWayangDto } from './mediawayang.dto';
+import { WayangQueryDto } from './wayangquery.dto';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -97,15 +98,51 @@ export class WayangService {
     });
   }
 
-  async findAll() {
-    return this.database.wayang.findMany({
+  async findAll(query: WayangQueryDto) {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      ...(query.search && {
+        nama: {
+          contains: query.search,
+        },
+      }),
+
+      ...(query.golonganId && {
+        golonganId: Number(query.golonganId),
+      }),
+
+      ...(query.penyimpananId && {
+        penyimpananId: Number(query.penyimpananId),
+      }),
+    };
+
+    const orderBy =
+      query.sortBy && query.order
+        ? {
+            [query.sortBy]: query.order,
+          }
+        : {
+            id: 'asc' as const,
+          };
+
+    const total = await this.database.wayang.count({
+      where,
+    });
+
+    const data = await this.database.wayang.findMany({
+      where,
+      orderBy,
+      skip,
+      take: limit,
       select: {
         id: true,
         noWayang: true,
         nama: true,
         golonganId: true,
         penyimpananId: true,
-
         media: {
           select: {
             id: true,
@@ -113,6 +150,16 @@ export class WayangService {
         },
       },
     });
+
+    return {
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {
@@ -201,5 +248,29 @@ export class WayangService {
     return {
       message: 'Media berhasil dihapus',
     };
+  }
+
+  async findMedia(mediaId: number) {
+    return this.database.mediaWayang.findUnique({
+      where: {
+        id: mediaId,
+      },
+    });
+  }
+
+  async findGolongan(golonganId: number) {
+    return this.database.golongan.findUnique({
+      where: {
+        id: golonganId,
+      },
+    });
+  }
+
+  async findPenyimpanan(penyimpananId: number) {
+    return this.database.penyimpanan.findUnique({
+      where: {
+        id: penyimpananId,
+      },
+    });
   }
 }
