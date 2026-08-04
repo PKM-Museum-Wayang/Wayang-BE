@@ -173,11 +173,17 @@ export class WayangService {
         id: true,
         noWayang: true,
         nama: true,
+        daerah: true,
+        kondisi: true,
         golonganId: true,
         penyimpananId: true,
         media: {
           select: {
             id: true,
+            namaFile: true,
+            jenis: true,
+            fileUrl: true,
+            keterangan: true,
           },
         },
       },
