@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreatePeminjamanDto } from './peminjam.dto';
 
@@ -13,9 +8,7 @@ export class PeminjamanService {
 
   async create(body: CreatePeminjamanDto) {
     if (body.tanggalPinjam >= body.tanggalKembali) {
-      throw new BadRequestException(
-        'Tanggal kembali harus lebih besar dari tanggal pinjam.',
-      );
+      throw new Error('INVALID_DATE');
     }
 
     let peminjam = await this.database.peminjam.findFirst({
@@ -41,7 +34,7 @@ export class PeminjamanService {
     });
 
     if (!wayang) {
-      throw new NotFoundException('Wayang tidak ditemukan.');
+      throw new Error('WAYANG_NOT_FOUND');
     }
 
     const bentrok = await this.database.logPeminjaman.findFirst({
@@ -60,9 +53,7 @@ export class PeminjamanService {
     });
 
     if (bentrok) {
-      throw new BadRequestException(
-        'Wayang sedang dipinjam pada rentang tanggal tersebut.',
-      );
+      throw new Error('WAYANG_UNAVAILABLE');
     }
 
     return this.database.logPeminjaman.create({
@@ -74,7 +65,6 @@ export class PeminjamanService {
         keterangan: body.keterangan,
         status: 'DIPINJAM',
       },
-
       include: {
         peminjam: true,
         wayang: true,
