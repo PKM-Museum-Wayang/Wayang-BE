@@ -21,6 +21,9 @@ lerna-debug.log*
 /coverage
 /.nyc_output
 
+# Prisma generated client
+src/generated/prisma/
+
 # IDEs and editors
 /.idea
 .project

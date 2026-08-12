@@ -4,7 +4,7 @@ export class WayangDto {
   deskripsi?: string;
   cerita?: string;
   kondisi?: string;
-
+  gaya!: 'PY' | 'PS' | 'PK';
   golonganId!: number;
   penyimpananId!: number;
 

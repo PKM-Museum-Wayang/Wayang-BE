@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `wayang` ADD COLUMN `golonganId` INTEGER NOT NULL,
+ALTER TABLE `Wayang` ADD COLUMN `golonganId` INTEGER NOT NULL,
     ADD COLUMN `penyimpananId` INTEGER NOT NULL;
 
 -- CreateTable

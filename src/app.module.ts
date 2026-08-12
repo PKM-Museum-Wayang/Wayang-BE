@@ -8,11 +8,16 @@ import { WayangModule } from './wayang/wayang.module';
 import { GolonganModule } from './golongan/golongan.module';
 import { PenyimpananModule } from './penyimpanan/penyimpanan.module';
 import { PeminjamanModule } from './peminjaman/peminjaman.module';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'storage'),
+      serveRoot: '/storage',
     }),
     DatabaseModule,
     AuthModule,

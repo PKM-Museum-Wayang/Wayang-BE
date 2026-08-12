@@ -1,18 +1,18 @@
 /*
   Warnings:
 
-  - You are about to drop the column `jenisMedia` on the `mediawayang` table. All the data in the column will be lost.
-  - You are about to drop the column `judul` on the `mediawayang` table. All the data in the column will be lost.
+  - You are about to drop the column `jenisMedia` on the `MediaWayang` table. All the data in the column will be lost.
+  - You are about to drop the column `judul` on the `MediaWayang` table. All the data in the column will be lost.
   - A unique constraint covering the columns `[namaGolongan,tipeGolongan]` on the table `Golongan` will be added. If there are existing duplicate values, this will fail.
   - Added the required column `jenis` to the `MediaWayang` table without a default value. This is not possible if the table is not empty.
   - Added the required column `namaFile` to the `MediaWayang` table without a default value. This is not possible if the table is not empty.
 
 */
 -- DropIndex
-DROP INDEX `Golongan_tipeGolongan_namaGolongan_key` ON `golongan`;
+DROP INDEX `Golongan_tipeGolongan_namaGolongan_key` ON `Golongan`;
 
 -- AlterTable
-ALTER TABLE `mediawayang` DROP COLUMN `jenisMedia`,
+ALTER TABLE `MediaWayang` DROP COLUMN `jenisMedia`,
     DROP COLUMN `judul`,
     ADD COLUMN `jenis` VARCHAR(191) NOT NULL,
     ADD COLUMN `namaFile` VARCHAR(191) NOT NULL;

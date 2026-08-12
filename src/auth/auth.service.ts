@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { logindto } from './login.dto';
 import bcrypt from 'bcrypt';
@@ -10,6 +10,7 @@ export class AuthService {
     private readonly database: DatabaseService,
     private readonly jwtservice: JwtService,
   ) {}
+
   async loginService(data: logindto) {
     const admin = await this.database.admin.findFirst({
       where: {
@@ -18,25 +19,26 @@ export class AuthService {
     });
 
     if (!admin) {
-      throw new UnauthorizedException('Not found');
-    } else {
-      const isValid = await bcrypt.compare(data.password!, admin.password);
-      if (!isValid) {
-        throw new UnauthorizedException('Invalid');
-      } else {
-        const token = await this.jwtservice.signAsync({
-          id: admin.id,
-          username: admin.username,
-        });
-        return {
-          message: 'Login success',
-          token: token,
-          data: {
-            id: admin.id,
-            username: admin.username,
-          },
-        };
-      }
+      throw new Error('USER_NOT_FOUND');
     }
+
+    const isValid = await bcrypt.compare(data.password!, admin.password);
+
+    if (!isValid) {
+      throw new Error('INVALID_PASSWORD');
+    }
+
+    const token = await this.jwtservice.signAsync({
+      id: admin.id,
+      username: admin.username,
+    });
+
+    return {
+      token,
+      admin: {
+        id: admin.id,
+        username: admin.username,
+      },
+    };
   }
 }
