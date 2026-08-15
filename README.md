@@ -945,3 +945,19 @@ application/json
   "message": "Internal server error."
 }
 ```
+
+## Add Wayang Relation
+### Endpoint
+
+Authorization: Bearer <JWT_TOKEN>
+
+```http
+POST /wayang/:id/relasi
+```
+Example Request
+```json
+{
+  "relasi": [2]
+}
+```
+
