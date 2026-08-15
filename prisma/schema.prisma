@@ -39,23 +39,25 @@ model Penyimpanan {
 }
 
 model Wayang {
-  id          Int     @id @default(autoincrement())
-  noWayang    String  @unique
+  id          Int      @id @default(autoincrement())
+  noWayang    String   @unique
   nama        String
   daerah      String?
   cerita      String?
   deskripsi   String?
   kondisi     String?
 
-  golonganId Int
-  golongan   Golongan @relation(fields: [golonganId], references: [id])
+  golonganId  Int
+  golongan    Golongan @relation(fields: [golonganId], references: [id])
 
   penyimpananId Int
   penyimpanan   Penyimpanan @relation(fields: [penyimpananId], references: [id])
 
-  media           MediaWayang[]
-  logKelola       LogKelola[]
-  logPeminjaman   LogPeminjaman[]
+  media         MediaWayang[]
+  logKelola     LogKelola[]
+  logPeminjaman LogPeminjaman[]
+
+  relasi        Json?
 }
 
 model MediaWayang {

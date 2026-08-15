@@ -14,6 +14,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { RelasiDto } from './relasi.dto';
+
 import { JwtAuthGuard } from 'src/guards/jwtguard';
 import { UseGuards } from '@nestjs/common';
 
@@ -454,6 +456,58 @@ export class WayangController {
               success: false,
               statusCode: 404,
               message: 'Golongan not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
+  }
+  @Post(':id/relasi')
+  @UseGuards(JwtAuthGuard)
+  async addRelasi(@Param('id') id: string, @Body() body: RelasiDto) {
+    try {
+      const data = await this.wayangService.addRelasi(Number(id), body.relasi);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Wayang relation added successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          case 'RELATION_WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'One or more related wayang not found.',
+            });
+
+          case 'SELF_RELATION_NOT_ALLOWED':
+            throw new BadRequestException({
+              success: false,
+              statusCode: 400,
+              message: 'Wayang cannot have a relation with itself.',
             });
 
           default:

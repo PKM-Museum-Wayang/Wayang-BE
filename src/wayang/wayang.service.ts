@@ -385,4 +385,49 @@ export class WayangService {
 
     return penyimpanan;
   }
+
+  async addRelasi(wayangId: number, relasi: number[]) {
+    const wayang = await this.database.wayang.findUnique({
+      where: {
+        id: wayangId,
+      },
+    });
+
+    if (!wayang) {
+      throw new Error('WAYANG_NOT_FOUND');
+    }
+
+    const relatedWayangs = await this.database.wayang.findMany({
+      where: {
+        id: {
+          in: relasi,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (relatedWayangs.length !== relasi.length) {
+      throw new Error('RELATION_WAYANG_NOT_FOUND');
+    }
+
+    if (relasi.includes(wayangId)) {
+      throw new Error('SELF_RELATION_NOT_ALLOWED');
+    }
+
+    return this.database.wayang.update({
+      where: {
+        id: wayangId,
+      },
+      data: {
+        relasi,
+      },
+      include: {
+        media: true,
+        golongan: true,
+        penyimpanan: true,
+      },
+    });
+  }
 }
