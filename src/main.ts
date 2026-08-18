@@ -10,7 +10,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-
   app.use(cookieParser());
 
   app.useStaticAssets(join(process.cwd(), 'storage'), {

@@ -1,6 +1,27 @@
-import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
 import { GolonganService } from './golongan.service';
+
+export class CreateGolonganDto {
+  namaGolongan?: string;
+  tipeGolongan?: string;
+}
+
+export class UpdateGolonganDto {
+  namaGolongan?: string;
+  tipeGolongan?: string;
+}
 
 @Controller('golongan')
 export class GolonganController {
@@ -18,29 +39,105 @@ export class GolonganController {
         data,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        switch (error.message) {
-          case 'DATABASE_ERROR':
-            throw new InternalServerErrorException({
-              success: false,
-              statusCode: 500,
-              message: 'Database error.',
-            });
-
-          default:
-            throw new InternalServerErrorException({
-              success: false,
-              statusCode: 500,
-              message: 'Internal server error.',
-            });
-        }
-      }
-
-      throw new InternalServerErrorException({
-        success: false,
-        statusCode: 500,
-        message: 'Internal server error.',
-      });
+      this.handleError(error);
     }
+  }
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const data = await this.golonganService.findOne(id);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Golongan retrieved successfully.',
+        data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  @Post()
+  async create(@Body() dto: CreateGolonganDto) {
+    try {
+      const data = await this.golonganService.create(dto);
+
+      return {
+        success: true,
+        statusCode: 201,
+        message: 'Golongan created successfully.',
+        data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateGolonganDto,
+  ) {
+    try {
+      const data = await this.golonganService.update(id, dto);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Golongan updated successfully.',
+        data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    try {
+      await this.golonganService.remove(id);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Golongan deleted successfully.',
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  private handleError(error: unknown): never {
+    if (error instanceof Error) {
+      switch (error.message) {
+        case 'GOLONGAN_NOT_FOUND':
+          throw new NotFoundException({
+            success: false,
+            statusCode: 404,
+            message: 'Golongan not found.',
+          });
+
+        case 'DATABASE_ERROR':
+          throw new InternalServerErrorException({
+            success: false,
+            statusCode: 500,
+            message: 'Database error.',
+          });
+
+        default:
+          throw new InternalServerErrorException({
+            success: false,
+            statusCode: 500,
+            message: 'Internal server error.',
+          });
+      }
+    }
+
+    throw new InternalServerErrorException({
+      success: false,
+      statusCode: 500,
+      message: 'Internal server error.',
+    });
   }
 }
