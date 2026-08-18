@@ -17,6 +17,9 @@ export class GolonganService {
             namaGolongan: 'asc',
           },
         ],
+        include: {
+          _count: { select: { wayang: true } },
+        },
       });
     } catch {
       throw new Error('DATABASE_ERROR');
