@@ -78,6 +78,7 @@ export class PeminjamanController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdatePeminjamanDto,
@@ -97,6 +98,7 @@ export class PeminjamanController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id', ParseIntPipe) id: number) {
     try {
       const data = await this.peminjamanService.remove(id);

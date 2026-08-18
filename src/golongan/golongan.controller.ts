@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 
 import { GolonganService } from './golongan.service';
-
+import { JwtAuthGuard } from 'src/guards/jwtguard';
+import { UseGuards } from '@nestjs/common';
 export class CreateGolonganDto {
   namaGolongan?: string;
   tipeGolongan?: string;
@@ -59,6 +60,7 @@ export class GolonganController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() dto: CreateGolonganDto) {
     try {
       const data = await this.golonganService.create(dto);
@@ -75,6 +77,7 @@ export class GolonganController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateGolonganDto,
@@ -94,6 +97,7 @@ export class GolonganController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id', ParseIntPipe) id: number) {
     try {
       await this.golonganService.remove(id);
