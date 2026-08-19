@@ -12,11 +12,16 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
 import { PeminjamanService } from './peminjaman.service';
-import { CreatePeminjamanDto, UpdatePeminjamanDto } from './peminjam.dto';
+import {
+  CreatePeminjamanDto,
+  UpdatePeminjamanDto,
+  PeminjamanQueryDto,
+} from './peminjam.dto';
 
 import { JwtAuthGuard } from 'src/guards/jwtguard';
 
@@ -46,9 +51,9 @@ export class PeminjamanController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() query: PeminjamanQueryDto) {
     try {
-      const data = await this.peminjamanService.findAll();
+      const data = await this.peminjamanService.findAll(query);
 
       return {
         success: true,
@@ -78,7 +83,6 @@ export class PeminjamanController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdatePeminjamanDto,
@@ -98,7 +102,6 @@ export class PeminjamanController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   async remove(@Param('id', ParseIntPipe) id: number) {
     try {
       const data = await this.peminjamanService.remove(id);
@@ -132,9 +135,7 @@ export class PeminjamanController {
 
   private handleError(error: unknown): never {
     console.error('========================================');
-
     console.error('PEMINJAMAN ERROR:', error);
-
     console.error('========================================');
 
     if (!(error instanceof Error)) {
@@ -189,7 +190,6 @@ export class PeminjamanController {
           {
             success: false,
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-
             message: error.message || 'Internal server error.',
           },
           HttpStatus.INTERNAL_SERVER_ERROR,

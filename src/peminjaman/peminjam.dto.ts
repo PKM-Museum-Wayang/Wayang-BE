@@ -20,6 +20,13 @@ export class UpdatePeminjamanDto {
 
   tanggalPinjam?: Date;
   tanggalKembali?: Date;
-
+  status?: 'DIPINJAM' | 'DIKEMBALIKAN';
   keterangan?: string;
+}
+
+export class PeminjamanQueryDto {
+  page?: string;
+  limit?: string;
+  search?: string;
+  status?: 'DIPINJAM' | 'TERLAMBAT' | 'DIKEMBALIKAN';
 }
