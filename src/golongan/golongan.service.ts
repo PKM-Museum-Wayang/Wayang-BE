@@ -1,26 +1,73 @@
 import { Injectable } from '@nestjs/common';
+
 import { DatabaseService } from 'src/database/database.service';
-import { CreateGolonganDto, UpdateGolonganDto } from './golongan.controller';
+
+import {
+  CreateGolonganDto,
+  UpdateGolonganDto,
+  GolonganQueryDto,
+} from './golongan.controller';
 
 @Injectable()
 export class GolonganService {
   constructor(private readonly db: DatabaseService) {}
 
-  async findAll() {
+  async findAll(query: GolonganQueryDto) {
     try {
-      return await this.db.golongan.findMany({
-        orderBy: [
-          {
-            tipeGolongan: 'asc',
+      const page = Math.max(Number(query.page) || 1, 1);
+
+      const limit = Math.min(Math.max(Number(query.limit) || 10, 1), 100);
+
+      const skip = (page - 1) * limit;
+
+      const where: any = {};
+
+      if (query.search?.trim()) {
+        where.namaGolongan = {
+          contains: query.search.trim(),
+        };
+      }
+
+      if (query.tipeGolongan?.trim()) {
+        where.tipeGolongan = query.tipeGolongan.trim();
+      }
+
+      const [data, total] = await Promise.all([
+        this.db.golongan.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: [
+            {
+              tipeGolongan: 'asc',
+            },
+            {
+              namaGolongan: 'asc',
+            },
+          ],
+          include: {
+            _count: {
+              select: {
+                wayang: true,
+              },
+            },
           },
-          {
-            namaGolongan: 'asc',
-          },
-        ],
-        include: {
-          _count: { select: { wayang: true } },
+        }),
+
+        this.db.golongan.count({
+          where,
+        }),
+      ]);
+
+      return {
+        data,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
         },
-      });
+      };
     } catch {
       throw new Error('DATABASE_ERROR');
     }

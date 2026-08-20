@@ -9,11 +9,13 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { GolonganService } from './golongan.service';
 import { JwtAuthGuard } from 'src/guards/jwtguard';
-import { UseGuards } from '@nestjs/common';
+
 export class CreateGolonganDto {
   namaGolongan?: string;
   tipeGolongan?: string;
@@ -24,14 +26,21 @@ export class UpdateGolonganDto {
   tipeGolongan?: string;
 }
 
+export class GolonganQueryDto {
+  page?: number;
+  limit?: number;
+  search?: string;
+  tipeGolongan?: string;
+}
+
 @Controller('golongan')
 export class GolonganController {
   constructor(private readonly golonganService: GolonganService) {}
 
   @Get()
-  async findAll() {
+  async findAll(@Query() query: GolonganQueryDto) {
     try {
-      const data = await this.golonganService.findAll();
+      const data = await this.golonganService.findAll(query);
 
       return {
         success: true,
@@ -43,6 +52,7 @@ export class GolonganController {
       this.handleError(error);
     }
   }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     try {

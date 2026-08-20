@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
+
 import { DatabaseService } from 'src/database/database.service';
+
 import { WayangDto } from './wayang,.dto';
+
 import { MediaWayangDto } from './mediawayang.dto';
+
 import { WayangQueryDto } from './wayangquery.dto';
+
 import * as fs from 'fs';
+
 import * as path from 'path';
 
 @Injectable()
@@ -35,6 +41,16 @@ export class WayangService {
 
     if (!golongan) {
       throw new Error('GOLONGAN_NOT_FOUND');
+    }
+
+    const penyimpanan = await this.database.penyimpanan.findUnique({
+      where: {
+        id: body.penyimpananId,
+      },
+    });
+
+    if (!penyimpanan) {
+      throw new Error('PENYIMPANAN_NOT_FOUND');
     }
 
     const countInKotak = await this.database.wayang.count({
@@ -133,50 +149,127 @@ export class WayangService {
   async findAll(query: WayangQueryDto) {
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 10;
+
     const skip = (page - 1) * limit;
 
+    const search = query.search?.trim();
+
+    /*
+     * ==========================================
+     * FILTER
+     * ==========================================
+     */
+
     const where = {
-      ...(query.search && {
-        nama: {
-          contains: query.search,
-        },
-      }),
+      /*
+       * Search berdasarkan nama wayang
+       */
+      ...(search
+        ? {
+            nama: {
+              contains: search,
+            },
+          }
+        : {}),
 
-      ...(query.golonganId && {
-        golonganId: Number(query.golonganId),
-      }),
+      /*
+       * Filter berdasarkan tipe golongan
+       *
+       * Contoh:
+       * SIMPINGAN_KIRI
+       * SIMPINGAN_KANAN
+       * DUDHAHAN
+       */
+      ...(query.tipeGolongan
+        ? {
+            golongan: {
+              tipeGolongan: query.tipeGolongan,
+            },
+          }
+        : {}),
 
-      ...(query.penyimpananId && {
-        penyimpananId: Number(query.penyimpananId),
-      }),
+      /*
+       * Filter berdasarkan nama golongan
+       */
+      ...(query.golonganId
+        ? {
+            golonganId: Number(query.golonganId),
+          }
+        : {}),
+
+      /*
+       * Filter berdasarkan penyimpanan / kotak
+       */
+      ...(query.penyimpananId
+        ? {
+            penyimpananId: Number(query.penyimpananId),
+          }
+        : {}),
     };
 
-    const orderBy =
-      query.sortBy && query.order
-        ? {
-            [query.sortBy]: query.order,
-          }
-        : {
-            id: 'asc' as const,
-          };
+    /*
+     * ==========================================
+     * SORT
+     * ==========================================
+     */
+
+    const allowedSort = ['id', 'nama', 'noWayang', 'daerah', 'kondisi'];
+
+    const sortBy =
+      query.sortBy && allowedSort.includes(query.sortBy) ? query.sortBy : 'id';
+
+    const order = query.order === 'desc' ? 'desc' : 'asc';
+
+    const orderBy = {
+      [sortBy]: order,
+    };
+
+    /*
+     * ==========================================
+     * TOTAL
+     * ==========================================
+     *
+     * Total adalah jumlah wayang
+     * setelah filter diterapkan.
+     */
 
     const total = await this.database.wayang.count({
       where,
     });
 
+    /*
+     * ==========================================
+     * DATA
+     * ==========================================
+     */
+
     const data = await this.database.wayang.findMany({
       where,
+
       orderBy,
+
       skip,
+
       take: limit,
+
       select: {
         id: true,
+
         noWayang: true,
+
         nama: true,
+
         daerah: true,
+
         kondisi: true,
+
         golonganId: true,
+
         penyimpananId: true,
+
+        /*
+         * MEDIA
+         */
         media: {
           select: {
             id: true,
@@ -186,16 +279,49 @@ export class WayangService {
             keterangan: true,
           },
         },
+
+        /*
+         * GOLONGAN
+         */
+        golongan: {
+          select: {
+            id: true,
+            namaGolongan: true,
+            tipeGolongan: true,
+          },
+        },
+
+        /*
+         * PENYIMPANAN
+         *
+         * PENTING:
+         * field yang benar adalah namaKotak,
+         * bukan nama.
+         */
+        penyimpanan: {
+          select: {
+            id: true,
+            namaKotak: true,
+          },
+        },
       },
     });
 
     return {
       data,
+
       pagination: {
         page,
         limit,
         total,
         totalPages: Math.ceil(total / limit),
+      },
+
+      /*
+       * Statistik hanya total wayang
+       */
+      statistics: {
+        totalWayang: total,
       },
     };
   }
@@ -205,6 +331,7 @@ export class WayangService {
       where: {
         id,
       },
+
       include: {
         media: true,
         golongan: true,
@@ -272,6 +399,7 @@ export class WayangService {
       where: {
         id,
       },
+
       data: {
         nama: body.nama,
         daerah: body.daerah,
@@ -281,6 +409,7 @@ export class WayangService {
         golonganId: body.golonganId,
         penyimpananId: body.penyimpananId,
       },
+
       include: {
         media: true,
         golongan: true,
@@ -288,6 +417,7 @@ export class WayangService {
       },
     });
   }
+
   async updateMedia(
     mediaId: number,
     body: MediaWayangDto,
@@ -307,10 +437,12 @@ export class WayangService {
       where: {
         id: mediaId,
       },
+
       data: {
         namaFile: body.namaFile,
         jenis: body.jenis,
         keterangan: body.keterangan,
+
         ...(file && {
           fileUrl: `/storage/${file.filename}`,
         }),
@@ -377,6 +509,11 @@ export class WayangService {
       where: {
         id: penyimpananId,
       },
+
+      select: {
+        id: true,
+        namaKotak: true,
+      },
     });
 
     if (!penyimpanan) {
@@ -403,6 +540,7 @@ export class WayangService {
           in: relasi,
         },
       },
+
       select: {
         id: true,
       },
@@ -420,9 +558,11 @@ export class WayangService {
       where: {
         id: wayangId,
       },
+
       data: {
         relasi,
       },
+
       include: {
         media: true,
         golongan: true,
