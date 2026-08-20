@@ -1,33 +1,35 @@
 import { Injectable } from '@nestjs/common';
-
 import { DatabaseService } from 'src/database/database.service';
 
 import { WayangDto } from './wayang,.dto';
-
 import { MediaWayangDto } from './mediawayang.dto';
-
 import { WayangQueryDto } from './wayangquery.dto';
 
 import * as fs from 'fs';
-
 import * as path from 'path';
 
 @Injectable()
 export class WayangService {
   constructor(private readonly database: DatabaseService) {}
 
+  private readonly gayaMap: Record<string, string> = {
+    'Purwo Yogyakarta': 'PY',
+    'Purwo Surakarta': 'PS',
+    'Purwo Kedu': 'PK',
+  };
+
+  private readonly kodeGolonganMap: Record<string, string> = {
+    SIMPINGAN_KIRI: 'KI',
+    SIMPINGAN_KANAN: 'KA',
+    DUDHAHAN: 'D',
+  };
+
   async create(body: WayangDto) {
     if (!body.golonganId || !body.penyimpananId) {
       throw new Error('INVALID_REQUEST');
     }
 
-    const gayaMap: Record<string, string> = {
-      'Purwo Yogyakarta': 'PY',
-      'Purwo Surakarta': 'PS',
-      'Purwo Kedu': 'PK',
-    };
-
-    const kodeGaya = gayaMap[body.gaya];
+    const kodeGaya = this.gayaMap[body.gaya];
 
     if (!kodeGaya) {
       throw new Error('INVALID_GAYA');
@@ -70,27 +72,30 @@ export class WayangService {
 
     const urutanGolongan = String(countGolongan + 1).padStart(2, '0');
 
-    const kodeGolonganMap: Record<string, string> = {
-      SIMPINGAN_KIRI: 'KI',
-      SIMPINGAN_KANAN: 'KA',
-      DUDHAHAN: 'D',
-    };
-
-    const kodeGolongan = kodeGolonganMap[golongan.tipeGolongan];
+    const kodeGolongan = this.kodeGolonganMap[golongan.tipeGolongan];
 
     if (!kodeGolongan) {
       throw new Error('INVALID_GOLONGAN_TYPE');
     }
 
-    const noWayang = `${kodeGaya} ${urutanGolongan} ${kodeGolongan} ${body.penyimpananId} - ${urutanDalamKotak}`;
+    const noWayang =
+      `${kodeGaya} ${urutanGolongan} ${kodeGolongan} ` +
+      `${body.penyimpananId} - ${urutanDalamKotak}`;
 
     return this.database.wayang.create({
       data: {
         noWayang,
+
         nama: body.nama,
+
+        gaya: body.gaya,
+
         daerah: body.daerah,
+
         deskripsi: body.deskripsi,
+
         cerita: body.cerita,
+
         kondisi: body.kondisi,
 
         golongan: {
@@ -148,22 +153,14 @@ export class WayangService {
 
   async findAll(query: WayangQueryDto) {
     const page = Number(query.page) || 1;
+
     const limit = Number(query.limit) || 10;
 
     const skip = (page - 1) * limit;
 
     const search = query.search?.trim();
 
-    /*
-     * ==========================================
-     * FILTER
-     * ==========================================
-     */
-
     const where = {
-      /*
-       * Search berdasarkan nama wayang
-       */
       ...(search
         ? {
             nama: {
@@ -172,14 +169,12 @@ export class WayangService {
           }
         : {}),
 
-      /*
-       * Filter berdasarkan tipe golongan
-       *
-       * Contoh:
-       * SIMPINGAN_KIRI
-       * SIMPINGAN_KANAN
-       * DUDHAHAN
-       */
+      ...(query.gaya
+        ? {
+            gaya: query.gaya,
+          }
+        : {}),
+
       ...(query.tipeGolongan
         ? {
             golongan: {
@@ -188,18 +183,12 @@ export class WayangService {
           }
         : {}),
 
-      /*
-       * Filter berdasarkan nama golongan
-       */
       ...(query.golonganId
         ? {
             golonganId: Number(query.golonganId),
           }
         : {}),
 
-      /*
-       * Filter berdasarkan penyimpanan / kotak
-       */
       ...(query.penyimpananId
         ? {
             penyimpananId: Number(query.penyimpananId),
@@ -207,13 +196,7 @@ export class WayangService {
         : {}),
     };
 
-    /*
-     * ==========================================
-     * SORT
-     * ==========================================
-     */
-
-    const allowedSort = ['id', 'nama', 'noWayang', 'daerah', 'kondisi'];
+    const allowedSort = ['id', 'nama', 'noWayang', 'gaya', 'daerah', 'kondisi'];
 
     const sortBy =
       query.sortBy && allowedSort.includes(query.sortBy) ? query.sortBy : 'id';
@@ -224,24 +207,9 @@ export class WayangService {
       [sortBy]: order,
     };
 
-    /*
-     * ==========================================
-     * TOTAL
-     * ==========================================
-     *
-     * Total adalah jumlah wayang
-     * setelah filter diterapkan.
-     */
-
     const total = await this.database.wayang.count({
       where,
     });
-
-    /*
-     * ==========================================
-     * DATA
-     * ==========================================
-     */
 
     const data = await this.database.wayang.findMany({
       where,
@@ -259,6 +227,8 @@ export class WayangService {
 
         nama: true,
 
+        gaya: true,
+
         daerah: true,
 
         kondisi: true,
@@ -267,9 +237,6 @@ export class WayangService {
 
         penyimpananId: true,
 
-        /*
-         * MEDIA
-         */
         media: {
           select: {
             id: true,
@@ -280,9 +247,6 @@ export class WayangService {
           },
         },
 
-        /*
-         * GOLONGAN
-         */
         golongan: {
           select: {
             id: true,
@@ -291,13 +255,6 @@ export class WayangService {
           },
         },
 
-        /*
-         * PENYIMPANAN
-         *
-         * PENTING:
-         * field yang benar adalah namaKotak,
-         * bukan nama.
-         */
         penyimpanan: {
           select: {
             id: true,
@@ -312,14 +269,14 @@ export class WayangService {
 
       pagination: {
         page,
+
         limit,
+
         total,
+
         totalPages: Math.ceil(total / limit),
       },
 
-      /*
-       * Statistik hanya total wayang
-       */
       statistics: {
         totalWayang: total,
       },
@@ -346,7 +303,7 @@ export class WayangService {
     return wayang;
   }
 
-  async remove(id: number) {
+  async update(id: number, body: WayangDto) {
     const wayang = await this.database.wayang.findUnique({
       where: {
         id,
@@ -357,22 +314,10 @@ export class WayangService {
       throw new Error('WAYANG_NOT_FOUND');
     }
 
-    await this.database.wayang.delete({
-      where: {
-        id,
-      },
-    });
-  }
+    const kodeGaya = this.gayaMap[body.gaya];
 
-  async update(id: number, body: WayangDto) {
-    const wayang = await this.database.wayang.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    if (!wayang) {
-      throw new Error('WAYANG_NOT_FOUND');
+    if (!kodeGaya) {
+      throw new Error('INVALID_GAYA');
     }
 
     const golongan = await this.database.golongan.findUnique({
@@ -395,18 +340,72 @@ export class WayangService {
       throw new Error('PENYIMPANAN_NOT_FOUND');
     }
 
+    const kodeGolongan = this.kodeGolonganMap[golongan.tipeGolongan];
+
+    if (!kodeGolongan) {
+      throw new Error('INVALID_GOLONGAN_TYPE');
+    }
+
+    const identityChanged =
+      wayang.gaya !== body.gaya ||
+      wayang.golonganId !== body.golonganId ||
+      wayang.penyimpananId !== body.penyimpananId;
+
+    let noWayang = wayang.noWayang;
+
+    if (identityChanged) {
+      const countInKotak = await this.database.wayang.count({
+        where: {
+          golonganId: body.golonganId,
+          penyimpananId: body.penyimpananId,
+
+          NOT: {
+            id,
+          },
+        },
+      });
+
+      const urutanDalamKotak = countInKotak + 1;
+
+      const countGolongan = await this.database.wayang.count({
+        where: {
+          golonganId: body.golonganId,
+
+          NOT: {
+            id,
+          },
+        },
+      });
+
+      const urutanGolongan = String(countGolongan + 1).padStart(2, '0');
+
+      noWayang =
+        `${kodeGaya} ${urutanGolongan} ${kodeGolongan} ` +
+        `${body.penyimpananId} - ${urutanDalamKotak}`;
+    }
+
     return this.database.wayang.update({
       where: {
         id,
       },
 
       data: {
+        noWayang,
+
         nama: body.nama,
+
+        gaya: body.gaya,
+
         daerah: body.daerah,
+
         deskripsi: body.deskripsi,
+
         cerita: body.cerita,
+
         kondisi: body.kondisi,
+
         golonganId: body.golonganId,
+
         penyimpananId: body.penyimpananId,
       },
 
@@ -414,6 +413,24 @@ export class WayangService {
         media: true,
         golongan: true,
         penyimpanan: true,
+      },
+    });
+  }
+
+  async remove(id: number) {
+    const wayang = await this.database.wayang.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!wayang) {
+      throw new Error('WAYANG_NOT_FOUND');
+    }
+
+    await this.database.wayang.delete({
+      where: {
+        id,
       },
     });
   }
@@ -433,6 +450,14 @@ export class WayangService {
       throw new Error('MEDIA_NOT_FOUND');
     }
 
+    if (file && media.fileUrl) {
+      const oldFilePath = path.join(process.cwd(), media.fileUrl);
+
+      if (fs.existsSync(oldFilePath)) {
+        fs.unlinkSync(oldFilePath);
+      }
+    }
+
     return this.database.mediaWayang.update({
       where: {
         id: mediaId,
@@ -440,7 +465,9 @@ export class WayangService {
 
       data: {
         namaFile: body.namaFile,
+
         jenis: body.jenis,
+
         keterangan: body.keterangan,
 
         ...(file && {

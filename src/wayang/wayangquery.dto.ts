@@ -1,16 +1,18 @@
 export class WayangQueryDto {
-  page?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
 
   search?: string;
 
-  golonganId?: number;
+  gaya?: string;
 
   tipeGolongan?: string;
 
-  penyimpananId?: number;
+  golonganId?: string;
+
+  penyimpananId?: string;
 
   sortBy?: string;
 
-  order?: 'asc' | 'desc';
+  order?: string;
 }

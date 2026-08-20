@@ -37,6 +37,23 @@ export class GolonganQueryDto {
 export class GolonganController {
   constructor(private readonly golonganService: GolonganService) {}
 
+  @Get('all')
+  async findAllWithoutPagination(@Query('tipeGolongan') tipeGolongan?: string) {
+    try {
+      const data =
+        await this.golonganService.findAllWithoutPagination(tipeGolongan);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'All golongan retrieved successfully.',
+        data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   @Get()
   async findAll(@Query() query: GolonganQueryDto) {
     try {
@@ -69,6 +86,8 @@ export class GolonganController {
     }
   }
 
+
+
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(@Body() dto: CreateGolonganDto) {
@@ -85,6 +104,8 @@ export class GolonganController {
       this.handleError(error);
     }
   }
+
+
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
@@ -105,6 +126,7 @@ export class GolonganController {
       this.handleError(error);
     }
   }
+
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)

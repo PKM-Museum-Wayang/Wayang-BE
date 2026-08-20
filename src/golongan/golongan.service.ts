@@ -12,6 +12,33 @@ import {
 export class GolonganService {
   constructor(private readonly db: DatabaseService) {}
 
+  async findAllWithoutPagination(tipeGolongan?: string) {
+    try {
+      const where: any = {};
+
+      if (tipeGolongan?.trim()) {
+        where.tipeGolongan = tipeGolongan.trim();
+      }
+
+      return await this.db.golongan.findMany({
+        where,
+
+        select: {
+          id: true,
+          namaGolongan: true,
+          tipeGolongan: true,
+        },
+
+        orderBy: {
+          namaGolongan: 'asc',
+        },
+      });
+    } catch {
+      throw new Error('DATABASE_ERROR');
+    }
+  }
+
+
   async findAll(query: GolonganQueryDto) {
     try {
       const page = Math.max(Number(query.page) || 1, 1);
@@ -22,21 +49,25 @@ export class GolonganService {
 
       const where: any = {};
 
+
       if (query.search?.trim()) {
         where.namaGolongan = {
           contains: query.search.trim(),
         };
       }
 
+
       if (query.tipeGolongan?.trim()) {
         where.tipeGolongan = query.tipeGolongan.trim();
       }
+
 
       const [data, total] = await Promise.all([
         this.db.golongan.findMany({
           where,
           skip,
           take: limit,
+
           orderBy: [
             {
               tipeGolongan: 'asc',
@@ -45,6 +76,7 @@ export class GolonganService {
               namaGolongan: 'asc',
             },
           ],
+
           include: {
             _count: {
               select: {
@@ -61,6 +93,7 @@ export class GolonganService {
 
       return {
         data,
+
         pagination: {
           page,
           limit,
@@ -72,6 +105,7 @@ export class GolonganService {
       throw new Error('DATABASE_ERROR');
     }
   }
+
 
   async findOne(id: number) {
     try {
@@ -93,6 +127,8 @@ export class GolonganService {
     }
   }
 
+
+
   async create(dto: CreateGolonganDto) {
     try {
       return await this.db.golongan.create({
@@ -105,6 +141,8 @@ export class GolonganService {
       throw new Error('DATABASE_ERROR');
     }
   }
+
+
 
   async update(id: number, dto: UpdateGolonganDto) {
     try {
@@ -128,6 +166,7 @@ export class GolonganService {
       throw new Error('DATABASE_ERROR');
     }
   }
+
 
   async remove(id: number) {
     try {

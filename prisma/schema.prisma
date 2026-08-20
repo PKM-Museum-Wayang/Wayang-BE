@@ -43,6 +43,7 @@ model Wayang {
   noWayang    String   @unique
   nama        String
   daerah      String?
+  gaya        String?
   cerita      String?
   deskripsi   String?
   kondisi     String?
