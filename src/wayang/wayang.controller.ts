@@ -12,20 +12,27 @@ import {
   BadRequestException,
   InternalServerErrorException,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 
 import { RelasiDto } from './relasi.dto';
 
 import { JwtAuthGuard } from 'src/guards/jwtguard';
-import { UseGuards } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
+
 import { diskStorage } from 'multer';
+
 import { extname } from 'path';
+
 import { WayangService } from './wayang.service';
+
 import { MediaWayangDto } from './mediawayang.dto';
+
 import { WayangDto } from './wayang,.dto';
+
 import { WayangQueryDto } from './wayangquery.dto';
+
 @Controller('wayang')
 export class WayangController {
   constructor(private readonly wayangService: WayangService) {}
@@ -52,6 +59,13 @@ export class WayangController {
               message: 'Invalid request.',
             });
 
+          case 'INVALID_GAYA':
+            throw new BadRequestException({
+              success: false,
+              statusCode: 400,
+              message: 'Invalid gaya.',
+            });
+
           case 'GOLONGAN_NOT_FOUND':
             throw new NotFoundException({
               success: false,
@@ -59,73 +73,18 @@ export class WayangController {
               message: 'Golongan not found.',
             });
 
+          case 'PENYIMPANAN_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Penyimpanan not found.',
+            });
+
           case 'INVALID_GOLONGAN_TYPE':
             throw new BadRequestException({
               success: false,
               statusCode: 400,
               message: 'Invalid golongan type.',
-            });
-
-          default:
-            throw new InternalServerErrorException({
-              success: false,
-              statusCode: 500,
-              message: 'Internal server error.',
-            });
-        }
-      }
-
-      throw new InternalServerErrorException({
-        success: false,
-        statusCode: 500,
-        message: 'Internal server error.',
-      });
-    }
-  }
-  @Post(':id/media')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './storage',
-        filename: (req, file, cb) => {
-          const unique =
-            Date.now() + '-' + Math.random().toString(36).substring(7);
-
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
-    }),
-  )
-  async addMedia(
-    @Param('id') id: string,
-    @Body() body: MediaWayangDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    try {
-      const data = await this.wayangService.addMedia(Number(id), body, file);
-
-      return {
-        success: true,
-        statusCode: 201,
-        message: 'Media added successfully.',
-        data,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        switch (error.message) {
-          case 'WAYANG_NOT_FOUND':
-            throw new NotFoundException({
-              success: false,
-              statusCode: 404,
-              message: 'Wayang not found.',
-            });
-
-          case 'FILE_REQUIRED':
-            throw new BadRequestException({
-              success: false,
-              statusCode: 400,
-              message: 'File is required.',
             });
 
           default:
@@ -157,14 +116,6 @@ export class WayangController {
         data,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        throw new InternalServerErrorException({
-          success: false,
-          statusCode: 500,
-          message: 'Internal server error.',
-        });
-      }
-
       throw new InternalServerErrorException({
         success: false,
         statusCode: 500,
@@ -247,64 +198,18 @@ export class WayangController {
               message: 'Penyimpanan not found.',
             });
 
-          default:
-            throw new InternalServerErrorException({
+          case 'INVALID_GAYA':
+            throw new BadRequestException({
               success: false,
-              statusCode: 500,
-              message: 'Internal server error.',
+              statusCode: 400,
+              message: 'Invalid gaya.',
             });
-        }
-      }
 
-      throw new InternalServerErrorException({
-        success: false,
-        statusCode: 500,
-        message: 'Internal server error.',
-      });
-    }
-  }
-
-  @Patch('media/:mediaId')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './storage',
-        filename: (req, file, cb) => {
-          const unique =
-            Date.now() + '-' + Math.random().toString(36).substring(7);
-
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
-    }),
-  )
-  async updateMedia(
-    @Param('mediaId') mediaId: string,
-    @Body() body: MediaWayangDto,
-    @UploadedFile() file?: Express.Multer.File,
-  ) {
-    try {
-      const data = await this.wayangService.updateMedia(
-        Number(mediaId),
-        body,
-        file,
-      );
-
-      return {
-        success: true,
-        statusCode: 200,
-        message: 'Media updated successfully.',
-        data,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        switch (error.message) {
-          case 'MEDIA_NOT_FOUND':
-            throw new NotFoundException({
+          case 'INVALID_GOLONGAN_TYPE':
+            throw new BadRequestException({
               success: false,
-              statusCode: 404,
-              message: 'Media not found.',
+              statusCode: 400,
+              message: 'Invalid golongan type.',
             });
 
           default:
@@ -361,6 +266,134 @@ export class WayangController {
       });
     }
   }
+
+  @Post(':id/media')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './storage',
+
+        filename: (req, file, cb) => {
+          const unique =
+            Date.now() + '-' + Math.random().toString(36).substring(7);
+
+          cb(null, unique + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  async addMedia(
+    @Param('id') id: string,
+    @Body() body: MediaWayangDto,
+    @UploadedFile()
+    file: Express.Multer.File,
+  ) {
+    try {
+      const data = await this.wayangService.addMedia(Number(id), body, file);
+
+      return {
+        success: true,
+        statusCode: 201,
+        message: 'Media added successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          case 'FILE_REQUIRED':
+            throw new BadRequestException({
+              success: false,
+              statusCode: 400,
+              message: 'File is required.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
+  }
+
+  @Patch('media/:mediaId')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './storage',
+
+        filename: (req, file, cb) => {
+          const unique =
+            Date.now() + '-' + Math.random().toString(36).substring(7);
+
+          cb(null, unique + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  async updateMedia(
+    @Param('mediaId') mediaId: string,
+    @Body() body: MediaWayangDto,
+    @UploadedFile()
+    file?: Express.Multer.File,
+  ) {
+    try {
+      const data = await this.wayangService.updateMedia(
+        Number(mediaId),
+        body,
+        file,
+      );
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Media updated successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'MEDIA_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Media not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
+  }
+
   @Delete('media/:mediaId')
   @UseGuards(JwtAuthGuard)
   async removeMedia(@Param('mediaId') mediaId: string) {
@@ -474,6 +507,7 @@ export class WayangController {
       });
     }
   }
+
   @Post(':id/relasi')
   @UseGuards(JwtAuthGuard)
   async addRelasi(@Param('id') id: string, @Body() body: RelasiDto) {
