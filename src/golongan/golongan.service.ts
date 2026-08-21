@@ -38,7 +38,6 @@ export class GolonganService {
     }
   }
 
-
   async findAll(query: GolonganQueryDto) {
     try {
       const page = Math.max(Number(query.page) || 1, 1);
@@ -49,18 +48,15 @@ export class GolonganService {
 
       const where: any = {};
 
-
       if (query.search?.trim()) {
         where.namaGolongan = {
           contains: query.search.trim(),
         };
       }
 
-
       if (query.tipeGolongan?.trim()) {
         where.tipeGolongan = query.tipeGolongan.trim();
       }
-
 
       const [data, total] = await Promise.all([
         this.db.golongan.findMany({
@@ -106,7 +102,6 @@ export class GolonganService {
     }
   }
 
-
   async findOne(id: number) {
     try {
       const data = await this.db.golongan.findUnique({
@@ -127,8 +122,6 @@ export class GolonganService {
     }
   }
 
-
-
   async create(dto: CreateGolonganDto) {
     try {
       return await this.db.golongan.create({
@@ -141,8 +134,6 @@ export class GolonganService {
       throw new Error('DATABASE_ERROR');
     }
   }
-
-
 
   async update(id: number, dto: UpdateGolonganDto) {
     try {
@@ -166,7 +157,6 @@ export class GolonganService {
       throw new Error('DATABASE_ERROR');
     }
   }
-
 
   async remove(id: number) {
     try {

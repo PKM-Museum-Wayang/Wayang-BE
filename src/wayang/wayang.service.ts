@@ -64,10 +64,6 @@ export class WayangService {
 
     const urutanDalamKotak = countInKotak + 1;
 
-    // Dihitung per tipeGolongan (bukan per golonganId), karena kodeGolongan
-    // di bawah ini juga dikelompokkan per tipeGolongan — dua golongan berbeda
-    // dengan tipeGolongan yang sama harus berbagi urutan yang sama supaya
-    // noWayang yang dihasilkan tidak bentrok (unique constraint).
     const countGolongan = await this.database.wayang.count({
       where: {
         golongan: {
@@ -373,9 +369,6 @@ export class WayangService {
 
       const urutanDalamKotak = countInKotak + 1;
 
-      // Sama seperti di create(): dihitung per tipeGolongan, bukan per
-      // golonganId, supaya sinkron dengan kodeGolongan dan tidak
-      // menghasilkan noWayang yang bentrok antar golongan berbeda.
       const countGolongan = await this.database.wayang.count({
         where: {
           golongan: {
@@ -452,8 +445,7 @@ export class WayangService {
       }
     }
 
-    // Hapus dulu semua record yang masih mereferensikan wayang ini,
-    // supaya penghapusan wayang tidak gagal karena foreign key constraint.
+
     await this.database.mediaWayang.deleteMany({
       where: {
         wayangId: id,
@@ -634,6 +626,111 @@ export class WayangService {
         relasi,
       },
 
+      include: {
+        media: true,
+        golongan: true,
+        penyimpanan: true,
+      },
+    });
+  }
+  async findRelasi(wayangId: number) {
+    const wayang = await this.database.wayang.findUnique({
+      where: {
+        id: wayangId,
+      },
+    });
+
+    if (!wayang) {
+      throw new Error('WAYANG_NOT_FOUND');
+    }
+
+    const relasi: number[] = Array.isArray(wayang.relasi)
+      ? wayang.relasi.filter((id): id is number => typeof id === 'number')
+      : [];
+
+    if (relasi.length === 0) {
+      return [];
+    }
+
+    const relatedWayangs = await this.database.wayang.findMany({
+      where: {
+        id: {
+          in: relasi,
+        },
+      },
+
+      select: {
+        id: true,
+        noWayang: true,
+        nama: true,
+        gaya: true,
+        daerah: true,
+        kondisi: true,
+
+        golongan: {
+          select: {
+            id: true,
+            namaGolongan: true,
+            tipeGolongan: true,
+          },
+        },
+
+        penyimpanan: {
+          select: {
+            id: true,
+            namaKotak: true,
+          },
+        },
+
+        media: {
+          select: {
+            id: true,
+            namaFile: true,
+            jenis: true,
+            fileUrl: true,
+            keterangan: true,
+          },
+        },
+      },
+    });
+
+
+    const relationMap = new Map(
+      relatedWayangs.map((wayang) => [wayang.id, wayang]),
+    );
+
+    return relasi
+      .map((id) => relationMap.get(id))
+      .filter((wayang) => wayang !== undefined);
+  }
+  async removeRelasi(wayangId: number, relatedId: number) {
+    const wayang = await this.database.wayang.findUnique({
+      where: {
+        id: wayangId,
+      },
+    });
+
+    if (!wayang) {
+      throw new Error('WAYANG_NOT_FOUND');
+    }
+
+    const relasi: number[] = Array.isArray(wayang.relasi)
+      ? wayang.relasi.filter((id): id is number => typeof id === 'number')
+      : [];
+  
+    if (!relasi.includes(relatedId)) {
+      throw new Error('RELATION_NOT_FOUND');
+    }
+
+    const updatedRelasi = relasi.filter((id) => id !== relatedId);
+
+    return this.database.wayang.update({
+      where: {
+        id: wayangId,
+      },
+      data: {
+        relasi: updatedRelasi,
+      },
       include: {
         media: true,
         golongan: true,

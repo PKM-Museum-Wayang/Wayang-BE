@@ -560,4 +560,92 @@ export class WayangController {
       });
     }
   }
+  @Get(':id/relasi')
+  async findRelasi(@Param('id') id: string) {
+    try {
+      const data = await this.wayangService.findRelasi(Number(id));
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Wayang relation retrieved successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
+  }
+  @Delete(':id/relasi/:relatedId')
+  @UseGuards(JwtAuthGuard)
+  async removeRelasi(
+    @Param('id') id: string,
+    @Param('relatedId') relatedId: string,
+  ) {
+    try {
+      const data = await this.wayangService.removeRelasi(
+        Number(id),
+        Number(relatedId),
+      );
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Wayang relation deleted successfully.',
+        data,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'WAYANG_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Wayang not found.',
+            });
+
+          case 'RELATION_NOT_FOUND':
+            throw new NotFoundException({
+              success: false,
+              statusCode: 404,
+              message: 'Relation not found.',
+            });
+
+          default:
+            throw new InternalServerErrorException({
+              success: false,
+              statusCode: 500,
+              message: 'Internal server error.',
+            });
+        }
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        statusCode: 500,
+        message: 'Internal server error.',
+      });
+    }
+  }
 }

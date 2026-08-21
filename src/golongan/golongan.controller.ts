@@ -86,8 +86,6 @@ export class GolonganController {
     }
   }
 
-
-
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(@Body() dto: CreateGolonganDto) {
@@ -104,8 +102,6 @@ export class GolonganController {
       this.handleError(error);
     }
   }
-
-
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
@@ -126,7 +122,6 @@ export class GolonganController {
       this.handleError(error);
     }
   }
-
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
