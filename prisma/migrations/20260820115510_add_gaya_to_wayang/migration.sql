@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `wayang` ADD COLUMN `gaya` VARCHAR(191) NULL;
+ALTER TABLE `Wayang` ADD COLUMN `gaya` VARCHAR(191) NULL;

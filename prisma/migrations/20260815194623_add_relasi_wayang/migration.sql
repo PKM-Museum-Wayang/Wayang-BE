@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `wayang` ADD COLUMN `relasi` JSON NULL;
+ALTER TABLE `Wayang` ADD COLUMN `relasi` JSON NULL;
