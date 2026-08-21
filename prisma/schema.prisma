@@ -44,8 +44,8 @@ model Wayang {
   nama        String
   daerah      String?
   gaya        String?
-  cerita      String?
-  deskripsi   String?
+  cerita      String?  @db.Text
+  deskripsi   String?  @db.Text
   kondisi     String?
 
   golonganId  Int
@@ -65,7 +65,7 @@ model MediaWayang {
   id          Int    @id @default(autoincrement())
   namaFile    String
   jenis       String
-  keterangan  String?
+  keterangan  String?  @db.Text
   fileUrl     String
 
   wayangId Int
@@ -93,7 +93,7 @@ model LogPeminjaman {
   tanggalPinjam DateTime
   tanggalKembali DateTime?
 
-  keterangan String?
+  keterangan String? @db.Text
   status     String
 
   @@index([peminjamId])
@@ -109,7 +109,7 @@ model LogKelola {
   wayangId Int
   wayang   Wayang @relation(fields: [wayangId], references: [id])
 
-  pesan String?
+  pesan String? @db.Text
 
   @@index([adminId])
   @@index([wayangId])

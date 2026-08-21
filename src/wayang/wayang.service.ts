@@ -64,9 +64,15 @@ export class WayangService {
 
     const urutanDalamKotak = countInKotak + 1;
 
+    // Dihitung per tipeGolongan (bukan per golonganId), karena kodeGolongan
+    // di bawah ini juga dikelompokkan per tipeGolongan — dua golongan berbeda
+    // dengan tipeGolongan yang sama harus berbagi urutan yang sama supaya
+    // noWayang yang dihasilkan tidak bentrok (unique constraint).
     const countGolongan = await this.database.wayang.count({
       where: {
-        golonganId: body.golonganId,
+        golongan: {
+          tipeGolongan: golongan.tipeGolongan,
+        },
       },
     });
 
@@ -367,9 +373,14 @@ export class WayangService {
 
       const urutanDalamKotak = countInKotak + 1;
 
+      // Sama seperti di create(): dihitung per tipeGolongan, bukan per
+      // golonganId, supaya sinkron dengan kodeGolongan dan tidak
+      // menghasilkan noWayang yang bentrok antar golongan berbeda.
       const countGolongan = await this.database.wayang.count({
         where: {
-          golonganId: body.golonganId,
+          golongan: {
+            tipeGolongan: golongan.tipeGolongan,
+          },
 
           NOT: {
             id,
@@ -422,11 +433,44 @@ export class WayangService {
       where: {
         id,
       },
+      include: {
+        media: true,
+      },
     });
 
     if (!wayang) {
       throw new Error('WAYANG_NOT_FOUND');
     }
+
+    for (const media of wayang.media) {
+      if (media.fileUrl) {
+        const filePath = path.join(process.cwd(), media.fileUrl);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    }
+
+    // Hapus dulu semua record yang masih mereferensikan wayang ini,
+    // supaya penghapusan wayang tidak gagal karena foreign key constraint.
+    await this.database.mediaWayang.deleteMany({
+      where: {
+        wayangId: id,
+      },
+    });
+
+    await this.database.logKelola.deleteMany({
+      where: {
+        wayangId: id,
+      },
+    });
+
+    await this.database.logPeminjaman.deleteMany({
+      where: {
+        wayangId: id,
+      },
+    });
 
     await this.database.wayang.delete({
       where: {
