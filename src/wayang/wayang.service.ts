@@ -155,7 +155,6 @@ export class WayangService {
 
   async findAll(query: WayangQueryDto) {
     const page = Number(query.page) || 1;
-
     const limit = Number(query.limit) || 10;
 
     const skip = (page - 1) * limit;
@@ -198,16 +197,9 @@ export class WayangService {
         : {}),
     };
 
-    const allowedSort = ['id', 'nama', 'noWayang', 'gaya', 'daerah', 'kondisi'];
-
-    const sortBy =
-      query.sortBy && allowedSort.includes(query.sortBy) ? query.sortBy : 'id';
-
-    const order = query.order === 'desc' ? 'desc' : 'asc';
-
-    const orderBy = {
-      [sortBy]: order,
-    };
+    // Sorting berdasarkan waktu pembuatan data
+    // Default: terbaru -> terlama
+    const order = query.order === 'asc' ? 'asc' : 'desc';
 
     const total = await this.database.wayang.count({
       where,
@@ -216,7 +208,9 @@ export class WayangService {
     const data = await this.database.wayang.findMany({
       where,
 
-      orderBy,
+      orderBy: {
+        createdAt: order,
+      },
 
       skip,
 
@@ -238,6 +232,10 @@ export class WayangService {
         golonganId: true,
 
         penyimpananId: true,
+
+        createdAt: true,
+
+        updatedAt: true,
 
         media: {
           select: {
@@ -444,7 +442,6 @@ export class WayangService {
         }
       }
     }
-
 
     await this.database.mediaWayang.deleteMany({
       where: {
@@ -694,7 +691,6 @@ export class WayangService {
       },
     });
 
-
     const relationMap = new Map(
       relatedWayangs.map((wayang) => [wayang.id, wayang]),
     );
@@ -717,7 +713,7 @@ export class WayangService {
     const relasi: number[] = Array.isArray(wayang.relasi)
       ? wayang.relasi.filter((id): id is number => typeof id === 'number')
       : [];
-  
+
     if (!relasi.includes(relatedId)) {
       throw new Error('RELATION_NOT_FOUND');
     }
