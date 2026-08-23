@@ -197,8 +197,6 @@ export class WayangService {
         : {}),
     };
 
-    // Sorting berdasarkan waktu pembuatan data
-    // Default: terbaru -> terlama
     const order = query.order === 'asc' ? 'asc' : 'desc';
 
     const total = await this.database.wayang.count({

@@ -36,6 +36,7 @@ model Penyimpanan {
   namaKotak String
 
   wayang Wayang[]
+  logPeminjaman   LogPeminjaman[]
 }
 
 model Wayang {
@@ -85,22 +86,25 @@ model Peminjam {
 }
 
 model LogPeminjaman {
-  id Int @id @default(autoincrement())
+  id              Int          @id @default(autoincrement())
 
-  peminjamId Int
-  peminjam   Peminjam @relation(fields: [peminjamId], references: [id])
+  peminjamId      Int
+  peminjam        Peminjam     @relation(fields: [peminjamId], references: [id])
 
-  wayangId Int
-  wayang   Wayang @relation(fields: [wayangId], references: [id])
+  wayangId        Int?
+  wayang          Wayang?      @relation(fields: [wayangId], references: [id])
 
-  tanggalPinjam DateTime
-  tanggalKembali DateTime?
+  penyimpananId   Int?
+  penyimpanan     Penyimpanan? @relation(fields: [penyimpananId], references: [id])
 
-  keterangan String? @db.Text
-  status     String
+  tanggalPinjam   DateTime
+  tanggalKembali  DateTime?
+  keterangan     String?       @db.Text
+  status          String
 
   @@index([peminjamId])
   @@index([wayangId])
+  @@index([penyimpananId])
 }
 
 model LogKelola {

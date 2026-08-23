@@ -17,7 +17,8 @@ import {
 } from '@nestjs/common';
 
 import { PeminjamanService } from './peminjaman.service';
-import {
+
+import type {
   CreatePeminjamanDto,
   UpdatePeminjamanDto,
   PeminjamanQueryDto,
@@ -67,7 +68,10 @@ export class PeminjamanController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
+  async findOne(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
     try {
       const data = await this.peminjamanService.findOne(id);
 
@@ -84,8 +88,11 @@ export class PeminjamanController {
 
   @Patch(':id')
   async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdatePeminjamanDto,
+    @Param('id', ParseIntPipe)
+    id: number,
+
+    @Body()
+    body: UpdatePeminjamanDto,
   ) {
     try {
       const data = await this.peminjamanService.update(id, body);
@@ -102,7 +109,10 @@ export class PeminjamanController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
     try {
       const data = await this.peminjamanService.remove(id);
 
@@ -118,7 +128,10 @@ export class PeminjamanController {
   }
 
   @Patch(':id/return')
-  async returnLoan(@Param('id', ParseIntPipe) id: number) {
+  async returnLoan(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
     try {
       const data = await this.peminjamanService.returnLoan(id);
 
@@ -135,7 +148,9 @@ export class PeminjamanController {
 
   private handleError(error: unknown): never {
     console.error('========================================');
+
     console.error('PEMINJAMAN ERROR:', error);
+
     console.error('========================================');
 
     if (!(error instanceof Error)) {
@@ -145,6 +160,7 @@ export class PeminjamanController {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
           message: 'Internal server error.',
         },
+
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -157,6 +173,13 @@ export class PeminjamanController {
           message: 'Invalid dates.',
         });
 
+      case 'INVALID_LOAN_TARGET':
+        throw new BadRequestException({
+          success: false,
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Pilih salah satu objek peminjaman: wayang atau kotak.',
+        });
+
       case 'WAYANG_NOT_FOUND':
         throw new NotFoundException({
           success: false,
@@ -164,11 +187,25 @@ export class PeminjamanController {
           message: 'Wayang not found.',
         });
 
+      case 'PENYIMPANAN_NOT_FOUND':
+        throw new NotFoundException({
+          success: false,
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Kotak penyimpanan tidak ditemukan.',
+        });
+
       case 'WAYANG_UNAVAILABLE':
         throw new BadRequestException({
           success: false,
           statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Wayang unavailable.',
+          message: 'Wayang sedang dipinjam pada periode tersebut.',
+        });
+
+      case 'PENYIMPANAN_UNAVAILABLE':
+        throw new BadRequestException({
+          success: false,
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Kotak sedang dipinjam pada periode tersebut.',
         });
 
       case 'LOAN_NOT_FOUND':
@@ -185,6 +222,13 @@ export class PeminjamanController {
           message: 'Loan already returned.',
         });
 
+      case 'INVALID_STATUS':
+        throw new BadRequestException({
+          success: false,
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Invalid status.',
+        });
+
       default:
         throw new HttpException(
           {
@@ -192,6 +236,7 @@ export class PeminjamanController {
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
             message: error.message || 'Internal server error.',
           },
+
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
     }
