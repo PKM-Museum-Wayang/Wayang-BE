@@ -17,7 +17,7 @@ model Admin {
   id        Int    @id @default(autoincrement())
   username  String @unique
   password  String
-
+  kegiatan  Kegiatan[]
   logKelola LogKelola[]
 }
 
@@ -120,4 +120,19 @@ model LogKelola {
 
   @@index([adminId])
   @@index([wayangId])
+}
+
+model Kegiatan {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  deskripsi   String?  @db.Text
+  tanggal     DateTime
+  lokasi      String
+  imageUrl    String?
+
+  adminId     Int
+  admin       Admin    @relation(fields: [adminId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

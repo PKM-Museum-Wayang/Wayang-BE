@@ -10,6 +10,7 @@ import { PenyimpananModule } from './penyimpanan/penyimpanan.module';
 import { PeminjamanModule } from './peminjaman/peminjaman.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { KegiatanModule } from './kegiatan/kegiatan.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,6 +26,7 @@ import { join } from 'path';
     GolonganModule,
     PenyimpananModule,
     PeminjamanModule,
+    KegiatanModule,
   ],
   controllers: [AppController],
   providers: [AppService],
