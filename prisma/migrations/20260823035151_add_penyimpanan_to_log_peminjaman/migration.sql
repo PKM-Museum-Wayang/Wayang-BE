@@ -1,8 +1,8 @@
 -- DropForeignKey
-ALTER TABLE `logpeminjaman` DROP FOREIGN KEY `LogPeminjaman_wayangId_fkey`;
+ALTER TABLE `LogPeminjaman` DROP FOREIGN KEY `LogPeminjaman_wayangId_fkey`;
 
 -- AlterTable
-ALTER TABLE `logpeminjaman` ADD COLUMN `penyimpananId` INTEGER NULL,
+ALTER TABLE `LogPeminjaman` ADD COLUMN `penyimpananId` INTEGER NULL,
     MODIFY `wayangId` INTEGER NULL;
 
 -- CreateIndex
