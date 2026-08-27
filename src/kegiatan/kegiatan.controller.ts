@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,8 +11,14 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 import {
   CreateKegiatanDto,
@@ -112,6 +119,41 @@ export class KegiatanController {
     }
   }
 
+  @Post(':id/gambar')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './storage',
+
+        filename: (req, file, cb) => {
+          const unique =
+            Date.now() + '-' + Math.random().toString(36).substring(7);
+
+          cb(null, unique + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  async addGambar(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile()
+    file: Express.Multer.File,
+  ) {
+    try {
+      const data = await this.kegiatanService.addGambar(id, file);
+
+      return {
+        success: true,
+        statusCode: 201,
+        message: 'Gambar kegiatan berhasil ditambahkan.',
+        data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   private handleError(error: unknown): never {
     if (error instanceof Error) {
       switch (error.message) {
@@ -127,6 +169,13 @@ export class KegiatanController {
             success: false,
             statusCode: 404,
             message: 'Admin not found.',
+          });
+
+        case 'FILE_REQUIRED':
+          throw new BadRequestException({
+            success: false,
+            statusCode: 400,
+            message: 'File is required.',
           });
 
         case 'DATABASE_ERROR':

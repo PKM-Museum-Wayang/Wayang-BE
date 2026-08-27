@@ -3,6 +3,9 @@ import { DatabaseService } from 'src/database/database.service';
 
 import { CreateKegiatanDto, UpdateKegiatanDto } from './kegiatan.dto';
 
+import * as fs from 'fs';
+import * as path from 'path';
+
 @Injectable()
 export class KegiatanService {
   constructor(private readonly db: DatabaseService) {}
@@ -375,6 +378,64 @@ export class KegiatanService {
       return existing;
     } catch (error) {
       if (error instanceof Error && error.message === 'KEGIATAN_NOT_FOUND') {
+        throw error;
+      }
+
+      throw new Error('DATABASE_ERROR');
+    }
+  }
+
+  async addGambar(id: number, file: Express.Multer.File) {
+    try {
+      const existing = await this.db.kegiatan.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!existing) {
+        throw new Error('KEGIATAN_NOT_FOUND');
+      }
+
+      if (!file) {
+        throw new Error('FILE_REQUIRED');
+      }
+
+      // Hapus file gambar lama supaya tidak menumpuk di folder storage.
+      if (existing.imageUrl) {
+        const oldFilePath = path.join(process.cwd(), existing.imageUrl);
+
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
+      }
+
+      const imageUrl = `/storage/${file.filename}`;
+
+      return await this.db.kegiatan.update({
+        where: {
+          id,
+        },
+
+        data: {
+          imageUrl,
+        },
+
+        include: {
+          admin: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.message === 'KEGIATAN_NOT_FOUND' ||
+          error.message === 'FILE_REQUIRED')
+      ) {
         throw error;
       }
 
