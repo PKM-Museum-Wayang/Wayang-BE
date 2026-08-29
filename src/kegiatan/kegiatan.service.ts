@@ -76,10 +76,16 @@ export class KegiatanService {
           deskripsi: true,
           tanggal: true,
           lokasi: true,
-          imageUrl: true,
           adminId: true,
           createdAt: true,
           updatedAt: true,
+          
+          gambar: {
+            select: {
+              id: true,
+              fileUrl: true,
+            },
+          },
 
           admin: {
             select: {
@@ -258,11 +264,12 @@ export class KegiatanService {
           deskripsi: dto.deskripsi,
           tanggal: new Date(dto.tanggal!),
           lokasi: dto.lokasi!,
-          imageUrl: dto.imageUrl,
           adminId: dto.adminId!,
         },
 
         include: {
+          gambar: true,
+
           admin: {
             select: {
               id: true,
@@ -388,9 +395,7 @@ export class KegiatanService {
   async addGambar(id: number, file: Express.Multer.File) {
     try {
       const existing = await this.db.kegiatan.findUnique({
-        where: {
-          id,
-        },
+        where: { id },
       });
 
       if (!existing) {
@@ -401,33 +406,14 @@ export class KegiatanService {
         throw new Error('FILE_REQUIRED');
       }
 
-      // Hapus file gambar lama supaya tidak menumpuk di folder storage.
-      if (existing.imageUrl) {
-        const oldFilePath = path.join(process.cwd(), existing.imageUrl);
+      const fileUrl = `/storage/${file.filename}`;
 
-        if (fs.existsSync(oldFilePath)) {
-          fs.unlinkSync(oldFilePath);
-        }
-      }
-
-      const imageUrl = `/storage/${file.filename}`;
-
-      return await this.db.kegiatan.update({
-        where: {
-          id,
-        },
-
+      // Setiap upload nambah gambar baru — tidak menggantikan yang lama,
+      // supaya satu kegiatan bisa punya banyak gambar untuk slideshow.
+      return await this.db.gambarKegiatan.create({
         data: {
-          imageUrl,
-        },
-
-        include: {
-          admin: {
-            select: {
-              id: true,
-              username: true,
-            },
-          },
+          fileUrl,
+          kegiatanId: id,
         },
       });
     } catch (error) {
@@ -436,6 +422,34 @@ export class KegiatanService {
         (error.message === 'KEGIATAN_NOT_FOUND' ||
           error.message === 'FILE_REQUIRED')
       ) {
+        throw error;
+      }
+
+      throw new Error('DATABASE_ERROR');
+    }
+  }
+
+  async removeGambar(gambarId: number) {
+    try {
+      const gambar = await this.db.gambarKegiatan.findUnique({
+        where: { id: gambarId },
+      });
+
+      if (!gambar) {
+        throw new Error('GAMBAR_NOT_FOUND');
+      }
+
+      const filePath = path.join(process.cwd(), gambar.fileUrl);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
+      await this.db.gambarKegiatan.delete({
+        where: { id: gambarId },
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'GAMBAR_NOT_FOUND') {
         throw error;
       }
 
