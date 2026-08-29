@@ -370,11 +370,31 @@ export class KegiatanService {
         where: {
           id,
         },
+
+        include: {
+          gambar: true,
+        },
       });
 
       if (!existing) {
         throw new Error('KEGIATAN_NOT_FOUND');
       }
+
+      // Hapus dulu file fisik + baris GambarKegiatan yang masih nempel,
+      // supaya penghapusan kegiatan tidak ditolak foreign key constraint.
+      for (const gambar of existing.gambar) {
+        const filePath = path.join(process.cwd(), gambar.fileUrl);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+
+      await this.db.gambarKegiatan.deleteMany({
+        where: {
+          kegiatanId: id,
+        },
+      });
 
       await this.db.kegiatan.delete({
         where: {
