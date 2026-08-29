@@ -28,7 +28,11 @@ export class AuthController {
 
       response.cookie('access_token', result.token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        // Deployment saat ini belum ada TLS di depan backend/frontend, jadi
+        // cookie Secure tidak akan pernah disimpan browser (dan bikin login
+        // "sukses" tapi request selanjutnya kelihatan belum login). Set
+        // COOKIE_SECURE=true di env begitu sudah ada HTTPS.
+        secure: process.env.COOKIE_SECURE === 'true',
         sameSite: 'lax',
         maxAge: 1000 * 60 * 60 * 24,
       });
