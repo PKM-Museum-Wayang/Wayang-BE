@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { DatabaseService } from 'src/database/database.service';
 
 import { WayangDto } from './wayang,.dto';
@@ -23,6 +24,61 @@ export class WayangService {
     SIMPINGAN_KANAN: 'KA',
     DUDHAHAN: 'D',
   };
+
+  private async getUrutanGolongan(
+    golonganId: number,
+    tipeGolongan: string,
+  ): Promise<number> {
+    const golonganDalamTipe = await this.database.golongan.findMany({
+      where: {
+        tipeGolongan,
+      },
+
+      orderBy: {
+        id: 'asc',
+      },
+
+      select: {
+        id: true,
+      },
+    });
+
+    const indexGolongan = golonganDalamTipe.findIndex(
+      (golongan) => golongan.id === golonganId,
+    );
+
+    if (indexGolongan === -1) {
+      throw new Error('GOLONGAN_ORDER_NOT_FOUND');
+    }
+
+    return indexGolongan + 1;
+  }
+
+  private async generateNoWayang(
+    kodeGaya: string,
+    golonganId: number,
+    tipeGolongan: string,
+    penyimpananId: number,
+    urutanDalamKotak: number,
+  ): Promise<string> {
+    const urutanGolongan = await this.getUrutanGolongan(
+      golonganId,
+      tipeGolongan,
+    );
+
+    const kodeGolongan = this.kodeGolonganMap[tipeGolongan];
+
+    if (!kodeGolongan) {
+      throw new Error('INVALID_GOLONGAN_TYPE');
+    }
+
+    return (
+      `${kodeGaya} ` +
+      `${String(urutanGolongan).padStart(2, '0')} ` +
+      `${kodeGolongan} ` +
+      `${penyimpananId} - ${urutanDalamKotak}`
+    );
+  }
 
   async create(body: WayangDto) {
     if (!body.golonganId || !body.penyimpananId) {
@@ -57,32 +113,19 @@ export class WayangService {
 
     const countInKotak = await this.database.wayang.count({
       where: {
-        golonganId: body.golonganId,
         penyimpananId: body.penyimpananId,
       },
     });
 
     const urutanDalamKotak = countInKotak + 1;
 
-    const countGolongan = await this.database.wayang.count({
-      where: {
-        golongan: {
-          tipeGolongan: golongan.tipeGolongan,
-        },
-      },
-    });
-
-    const urutanGolongan = String(countGolongan + 1).padStart(2, '0');
-
-    const kodeGolongan = this.kodeGolonganMap[golongan.tipeGolongan];
-
-    if (!kodeGolongan) {
-      throw new Error('INVALID_GOLONGAN_TYPE');
-    }
-
-    const noWayang =
-      `${kodeGaya} ${urutanGolongan} ${kodeGolongan} ` +
-      `${body.penyimpananId} - ${urutanDalamKotak}`;
+    const noWayang = await this.generateNoWayang(
+      kodeGaya,
+      golongan.id,
+      golongan.tipeGolongan,
+      body.penyimpananId,
+      urutanDalamKotak,
+    );
 
     return this.database.wayang.create({
       data: {
@@ -354,7 +397,6 @@ export class WayangService {
     if (identityChanged) {
       const countInKotak = await this.database.wayang.count({
         where: {
-          golonganId: body.golonganId,
           penyimpananId: body.penyimpananId,
 
           NOT: {
@@ -364,24 +406,17 @@ export class WayangService {
       });
 
       const urutanDalamKotak = countInKotak + 1;
-
-      const countGolongan = await this.database.wayang.count({
-        where: {
-          golongan: {
-            tipeGolongan: golongan.tipeGolongan,
-          },
-
-          NOT: {
-            id,
-          },
-        },
-      });
-
-      const urutanGolongan = String(countGolongan + 1).padStart(2, '0');
+      const urutanGolongan = await this.getUrutanGolongan(
+        golongan.id,
+        golongan.tipeGolongan,
+      );
 
       noWayang =
-        `${kodeGaya} ${urutanGolongan} ${kodeGolongan} ` +
-        `${body.penyimpananId} - ${urutanDalamKotak}`;
+        `${kodeGaya} ` +
+        `${String(urutanGolongan).padStart(2, '0')} ` +
+        `${kodeGolongan} ` +
+        `${body.penyimpananId} - ` +
+        `${urutanDalamKotak}`;
     }
 
     return this.database.wayang.update({
@@ -422,6 +457,7 @@ export class WayangService {
       where: {
         id,
       },
+
       include: {
         media: true,
       },
@@ -628,6 +664,7 @@ export class WayangService {
       },
     });
   }
+
   async findRelasi(wayangId: number) {
     const wayang = await this.database.wayang.findUnique({
       where: {
@@ -656,10 +693,15 @@ export class WayangService {
 
       select: {
         id: true,
+
         noWayang: true,
+
         nama: true,
+
         gaya: true,
+
         daerah: true,
+
         kondisi: true,
 
         golongan: {
@@ -697,6 +739,7 @@ export class WayangService {
       .map((id) => relationMap.get(id))
       .filter((wayang) => wayang !== undefined);
   }
+
   async removeRelasi(wayangId: number, relatedId: number) {
     const wayang = await this.database.wayang.findUnique({
       where: {
@@ -722,9 +765,11 @@ export class WayangService {
       where: {
         id: wayangId,
       },
+
       data: {
         relasi: updatedRelasi,
       },
+
       include: {
         media: true,
         golongan: true,
