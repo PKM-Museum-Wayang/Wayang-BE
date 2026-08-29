@@ -223,6 +223,13 @@ export class KegiatanService {
         },
 
         include: {
+          gambar: {
+            select: {
+              id: true,
+              fileUrl: true,
+            },
+          },
+
           admin: {
             select: {
               id: true,
