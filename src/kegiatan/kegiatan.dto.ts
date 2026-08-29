@@ -3,7 +3,6 @@ export class CreateKegiatanDto {
   deskripsi?: string;
   tanggal?: string;
   lokasi?: string;
-  imageUrl?: string;
   adminId?: number;
 }
 
@@ -12,7 +11,6 @@ export class UpdateKegiatanDto {
   deskripsi?: string;
   tanggal?: string;
   lokasi?: string;
-  imageUrl?: string;
   adminId?: number;
 }
 

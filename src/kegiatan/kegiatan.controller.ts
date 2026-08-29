@@ -171,6 +171,13 @@ export class KegiatanController {
             message: 'Admin not found.',
           });
 
+        case 'GAMBAR_NOT_FOUND':
+          throw new NotFoundException({
+            success: false,
+            statusCode: 404,
+            message: 'Gambar kegiatan not found.',
+          });
+
         case 'FILE_REQUIRED':
           throw new BadRequestException({
             success: false,
