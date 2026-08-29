@@ -25,6 +25,7 @@ RUN npm ci --omit=dev
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 
 # Folder gambar wayang/kegiatan yang di-upload — mount sebagai volume
 # di produksi supaya isinya tidak hilang tiap kali image di-rebuild.
