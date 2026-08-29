@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
 import { DatabaseService } from 'src/database/database.service';
-import {
+
+import type {
   CreatePeminjamanDto,
   UpdatePeminjamanDto,
   PeminjamanQueryDto,
@@ -57,6 +59,14 @@ export class PeminjamanService {
   }
 
   async create(body: CreatePeminjamanDto) {
+    const hasWayang = body.wayangId !== undefined && body.wayangId !== null;
+
+    const hasPenyimpanan =
+      body.penyimpananId !== undefined && body.penyimpananId !== null;
+
+    if (hasWayang === hasPenyimpanan) {
+      throw new Error('INVALID_LOAN_TARGET');
+    }
     const tanggalPinjam = this.parseTanggalPinjam(body.tanggalPinjam);
 
     const tanggalKembali = this.parseTanggalKembali(body.tanggalKembali);
@@ -83,41 +93,83 @@ export class PeminjamanService {
       });
     }
 
-    const wayang = await this.database.wayang.findUnique({
-      where: {
-        id: body.wayangId,
-      },
-    });
+    /*
+     * =====================================================
+     * 4. Jika yang dipinjam adalah WAYANG
+     * =====================================================
+     */
 
-    if (!wayang) {
-      throw new Error('WAYANG_NOT_FOUND');
+    if (hasWayang) {
+      const wayang = await this.database.wayang.findUnique({
+        where: {
+          id: body.wayangId!,
+        },
+      });
+
+      if (!wayang) {
+        throw new Error('WAYANG_NOT_FOUND');
+      }
+
+      const bentrok = await this.database.logPeminjaman.findFirst({
+        where: {
+          wayangId: body.wayangId,
+
+          status: 'DIPINJAM',
+
+          tanggalPinjam: {
+            lte: tanggalKembali,
+          },
+
+          tanggalKembali: {
+            gte: tanggalPinjam,
+          },
+        },
+      });
+
+      if (bentrok) {
+        throw new Error('WAYANG_UNAVAILABLE');
+      }
     }
 
-    const bentrok = await this.database.logPeminjaman.findFirst({
-      where: {
-        wayangId: body.wayangId,
-
-        status: 'DIPINJAM',
-
-        tanggalPinjam: {
-          lte: tanggalKembali,
+    if (hasPenyimpanan) {
+      const penyimpanan = await this.database.penyimpanan.findUnique({
+        where: {
+          id: body.penyimpananId!,
         },
+      });
 
-        tanggalKembali: {
-          gte: tanggalPinjam,
+      if (!penyimpanan) {
+        throw new Error('PENYIMPANAN_NOT_FOUND');
+      }
+
+      const bentrok = await this.database.logPeminjaman.findFirst({
+        where: {
+          penyimpananId: body.penyimpananId,
+
+          status: 'DIPINJAM',
+
+          tanggalPinjam: {
+            lte: tanggalKembali,
+          },
+
+          tanggalKembali: {
+            gte: tanggalPinjam,
+          },
         },
-      },
-    });
+      });
 
-    if (bentrok) {
-      throw new Error('WAYANG_UNAVAILABLE');
+      if (bentrok) {
+        throw new Error('PENYIMPANAN_UNAVAILABLE');
+      }
     }
 
     return this.database.logPeminjaman.create({
       data: {
         peminjamId: peminjam.id,
 
-        wayangId: body.wayangId,
+        wayangId: hasWayang ? body.wayangId! : null,
+
+        penyimpananId: hasPenyimpanan ? body.penyimpananId! : null,
 
         tanggalPinjam,
 
@@ -130,7 +182,10 @@ export class PeminjamanService {
 
       include: {
         peminjam: true,
+
         wayang: true,
+
+        penyimpanan: true,
       },
     });
   }
@@ -149,20 +204,31 @@ export class PeminjamanService {
     const where: any = {};
 
     if (search) {
-      where.peminjam = {
-        OR: [
-          {
+      where.OR = [
+        {
+          peminjam: {
             namaPeminjam: {
               contains: search,
             },
           },
-          {
+        },
+
+        {
+          peminjam: {
             noHp: {
               contains: search,
             },
           },
-        ],
-      };
+        },
+
+        {
+          wayang: {
+            nama: {
+              contains: search,
+            },
+          },
+        },
+      ];
     }
 
     if (query.status === 'DIPINJAM') {
@@ -199,6 +265,7 @@ export class PeminjamanService {
         include: {
           peminjam: true,
           wayang: true,
+          penyimpanan: true,
         },
 
         orderBy: {
@@ -242,21 +309,15 @@ export class PeminjamanService {
 
       pagination: {
         page,
-
         limit,
-
         total,
-
         totalPages: Math.ceil(total / limit),
       },
 
       statistics: {
         totalPeminjaman,
-
         totalPeminjam: totalPeminjam.length,
-
         totalDipinjam,
-
         totalDikembalikan,
       },
     };
@@ -271,6 +332,7 @@ export class PeminjamanService {
       include: {
         peminjam: true,
         wayang: true,
+        penyimpanan: true,
       },
     });
 
@@ -296,48 +358,79 @@ export class PeminjamanService {
       throw new Error('LOAN_NOT_FOUND');
     }
 
+    const wayangId =
+      body.wayangId !== undefined ? body.wayangId : existing.wayangId;
+
+    const penyimpananId =
+      body.penyimpananId !== undefined
+        ? body.penyimpananId
+        : existing.penyimpananId;
+
+    const hasWayang = wayangId !== null && wayangId !== undefined;
+
+    const hasPenyimpanan =
+      penyimpananId !== null && penyimpananId !== undefined;
+
+    if (hasWayang === hasPenyimpanan) {
+      throw new Error('INVALID_LOAN_TARGET');
+    }
+
     const tanggalPinjam =
       body.tanggalPinjam !== undefined
         ? this.parseTanggalPinjam(body.tanggalPinjam)
-        : this.parseTanggalPinjam(existing.tanggalPinjam);
+        : existing.tanggalPinjam;
 
     const tanggalKembali =
       body.tanggalKembali !== undefined
         ? this.parseTanggalKembali(body.tanggalKembali)
-        : this.parseTanggalKembali(existing.tanggalKembali!);
+        : existing.tanggalKembali
+          ? existing.tanggalKembali
+          : null;
 
-    if (tanggalKembali <= tanggalPinjam) {
+    if (!tanggalKembali || tanggalKembali <= tanggalPinjam) {
       throw new Error('INVALID_DATE');
     }
 
-    const wayangId = body.wayangId ?? existing.wayangId;
+    if (hasWayang) {
+      const wayang = await this.database.wayang.findUnique({
+        where: {
+          id: wayangId!,
+        },
+      });
 
-    const wayang = await this.database.wayang.findUnique({
-      where: {
-        id: wayangId,
-      },
-    });
-
-    if (!wayang) {
-      throw new Error('WAYANG_NOT_FOUND');
+      if (!wayang) {
+        throw new Error('WAYANG_NOT_FOUND');
+      }
     }
 
-    const status = body.status ?? existing.status;
+    if (hasPenyimpanan) {
+      const penyimpanan = await this.database.penyimpanan.findUnique({
+        where: {
+          id: penyimpananId!,
+        },
+      });
 
-    if (status !== 'DIPINJAM' && status !== 'DIKEMBALIKAN') {
-      throw new Error('INVALID_STATUS');
+      if (!penyimpanan) {
+        throw new Error('PENYIMPANAN_NOT_FOUND');
+      }
     }
 
-    if (status === 'DIPINJAM') {
+    if (body.status === undefined || body.status === 'DIPINJAM') {
       const bentrok = await this.database.logPeminjaman.findFirst({
         where: {
           id: {
             not: id,
           },
 
-          wayangId,
-
           status: 'DIPINJAM',
+
+          ...(hasWayang
+            ? {
+                wayangId,
+              }
+            : {
+                penyimpananId,
+              }),
 
           tanggalPinjam: {
             lte: tanggalKembali,
@@ -350,7 +443,9 @@ export class PeminjamanService {
       });
 
       if (bentrok) {
-        throw new Error('WAYANG_UNAVAILABLE');
+        throw new Error(
+          hasWayang ? 'WAYANG_UNAVAILABLE' : 'PENYIMPANAN_UNAVAILABLE',
+        );
       }
     }
 
@@ -380,13 +475,21 @@ export class PeminjamanService {
       });
     }
 
+    const status = body.status ?? existing.status;
+
+    if (status !== 'DIPINJAM' && status !== 'DIKEMBALIKAN') {
+      throw new Error('INVALID_STATUS');
+    }
+
     return this.database.logPeminjaman.update({
       where: {
         id,
       },
 
       data: {
-        wayangId,
+        wayangId: hasWayang ? wayangId : null,
+
+        penyimpananId: hasPenyimpanan ? penyimpananId : null,
 
         tanggalPinjam,
 
@@ -402,6 +505,7 @@ export class PeminjamanService {
       include: {
         peminjam: true,
         wayang: true,
+        penyimpanan: true,
       },
     });
   }
@@ -455,6 +559,7 @@ export class PeminjamanService {
       include: {
         peminjam: true,
         wayang: true,
+        penyimpanan: true,
       },
     });
   }

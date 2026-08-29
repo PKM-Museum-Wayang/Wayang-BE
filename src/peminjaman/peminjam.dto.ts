@@ -1,32 +1,35 @@
-export class CreatePeminjamanDto {
-  namaPeminjam!: string;
-  alamat!: string;
-  noHp!: string;
+export interface CreatePeminjamanDto {
+  namaPeminjam: string;
+  alamat: string;
+  noHp: string;
 
-  wayangId!: number;
+  wayangId?: number;
+  penyimpananId?: number;
 
-  tanggalPinjam!: Date;
-  tanggalKembali!: Date;
+  tanggalPinjam: string | Date;
+  tanggalKembali: string | Date;
 
   keterangan?: string;
 }
 
-export class UpdatePeminjamanDto {
+export interface UpdatePeminjamanDto {
   namaPeminjam?: string;
   alamat?: string;
   noHp?: string;
 
-  wayangId?: number;
+  wayangId?: number | null;
+  penyimpananId?: number | null;
 
-  tanggalPinjam?: Date;
-  tanggalKembali?: Date;
-  status?: 'DIPINJAM' | 'DIKEMBALIKAN';
+  tanggalPinjam?: string | Date;
+  tanggalKembali?: string | Date;
+
   keterangan?: string;
+  status?: string;
 }
 
-export class PeminjamanQueryDto {
-  page?: string;
-  limit?: string;
+export interface PeminjamanQueryDto {
+  page?: number;
+  limit?: number;
   search?: string;
-  status?: 'DIPINJAM' | 'TERLAMBAT' | 'DIKEMBALIKAN';
+  status?: string;
 }

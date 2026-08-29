@@ -17,7 +17,7 @@ model Admin {
   id        Int    @id @default(autoincrement())
   username  String @unique
   password  String
-
+  kegiatan  Kegiatan[]
   logKelola LogKelola[]
 }
 
@@ -36,6 +36,7 @@ model Penyimpanan {
   namaKotak String
 
   wayang Wayang[]
+  logPeminjaman   LogPeminjaman[]
 }
 
 model Wayang {
@@ -59,6 +60,9 @@ model Wayang {
   logPeminjaman LogPeminjaman[]
 
   relasi        Json?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model MediaWayang {
@@ -82,22 +86,25 @@ model Peminjam {
 }
 
 model LogPeminjaman {
-  id Int @id @default(autoincrement())
+  id              Int          @id @default(autoincrement())
 
-  peminjamId Int
-  peminjam   Peminjam @relation(fields: [peminjamId], references: [id])
+  peminjamId      Int
+  peminjam        Peminjam     @relation(fields: [peminjamId], references: [id])
 
-  wayangId Int
-  wayang   Wayang @relation(fields: [wayangId], references: [id])
+  wayangId        Int?
+  wayang          Wayang?      @relation(fields: [wayangId], references: [id])
 
-  tanggalPinjam DateTime
-  tanggalKembali DateTime?
+  penyimpananId   Int?
+  penyimpanan     Penyimpanan? @relation(fields: [penyimpananId], references: [id])
 
-  keterangan String? @db.Text
-  status     String
+  tanggalPinjam   DateTime
+  tanggalKembali  DateTime?
+  keterangan     String?       @db.Text
+  status          String
 
   @@index([peminjamId])
   @@index([wayangId])
+  @@index([penyimpananId])
 }
 
 model LogKelola {
@@ -113,4 +120,19 @@ model LogKelola {
 
   @@index([adminId])
   @@index([wayangId])
+}
+
+model Kegiatan {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  deskripsi   String?  @db.Text
+  tanggal     DateTime
+  lokasi      String
+  imageUrl    String?
+
+  adminId     Int
+  admin       Admin    @relation(fields: [adminId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
