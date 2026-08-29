@@ -333,10 +333,6 @@ export class KegiatanService {
             lokasi: dto.lokasi,
           }),
 
-          ...(dto.imageUrl !== undefined && {
-            imageUrl: dto.imageUrl,
-          }),
-
           ...(dto.adminId !== undefined && {
             adminId: dto.adminId,
           }),
