@@ -200,4 +200,21 @@ export class KegiatanController {
       message: 'Internal server error.',
     });
   }
+
+  @Delete('gambar/:gambarId')
+  @UseGuards(JwtAuthGuard)
+  async removeGambar(@Param('gambarId', ParseIntPipe) gambarId: number) {
+    try {
+      await this.kegiatanService.removeGambar(gambarId);
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Gambar kegiatan berhasil dihapus.',
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
 }
