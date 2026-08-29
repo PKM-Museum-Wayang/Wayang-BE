@@ -26,6 +26,9 @@ RUN npm ci --omit=dev
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/prisma.config.ts ./prisma.config.ts
+# src/ dibawa juga karena prisma/seed.ts di-run pakai tsx (butuh source TS-nya,
+# bukan hasil compile) untuk import DatabaseService.
+COPY --from=build /app/src ./src
 
 # Folder gambar wayang/kegiatan yang di-upload — mount sebagai volume
 # di produksi supaya isinya tidak hilang tiap kali image di-rebuild.

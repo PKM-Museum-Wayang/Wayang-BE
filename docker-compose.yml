@@ -1,0 +1,50 @@
+services:
+  db:
+    image: mariadb:11
+    container_name: wayang_db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: 12345678
+      MARIADB_DATABASE: wayang_db
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-p$$MARIADB_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: w-be:main
+    container_name: wayang-backend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-12345678}
+      DB_DATABASE: ${DB_DATABASE:-wayang_db}
+      SECRET_KEY: ${SECRET_KEY:-123}
+      FRONTEND_URL: http://168.144.45.197:3001
+    volumes:
+      - wayang_storage:/app/storage
+
+  frontend:
+    image: w-fe:main
+    container_name: wayang-frontend
+    ports:
+      - "5137:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+  wayang_storage:
