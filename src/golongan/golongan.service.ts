@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { DatabaseService } from 'src/database/database.service';
+import { resolveGolonganOrder } from './golongan-order';
 
-import {
+import type {
   CreateGolonganDto,
   UpdateGolonganDto,
   GolonganQueryDto,
@@ -27,11 +28,14 @@ export class GolonganService {
           id: true,
           namaGolongan: true,
           tipeGolongan: true,
+          order: true,
         },
 
-        orderBy: {
-          namaGolongan: 'asc',
-        },
+        orderBy: [
+          { tipeGolongan: 'asc' },
+          { order: 'asc' },
+          { id: 'asc' },
+        ],
       });
     } catch {
       throw new Error('DATABASE_ERROR');
@@ -69,7 +73,10 @@ export class GolonganService {
               tipeGolongan: 'asc',
             },
             {
-              namaGolongan: 'asc',
+              order: 'asc',
+            },
+            {
+              id: 'asc',
             },
           ],
 
@@ -123,11 +130,17 @@ export class GolonganService {
   }
 
   async create(dto: CreateGolonganDto) {
+    const order = resolveGolonganOrder(
+      dto.namaGolongan?.trim() ?? '',
+      dto.tipeGolongan?.trim() ?? '',
+      dto.order,
+    );
     try {
       return await this.db.golongan.create({
         data: {
-          namaGolongan: dto.namaGolongan!,
-          tipeGolongan: dto.tipeGolongan!,
+          namaGolongan: dto.namaGolongan?.trim() ?? '',
+          tipeGolongan: dto.tipeGolongan?.trim() ?? '',
+          order,
         },
       });
     } catch {
@@ -145,12 +158,30 @@ export class GolonganService {
         throw new Error('GOLONGAN_NOT_FOUND');
       }
 
+      const namaGolongan = dto.namaGolongan?.trim() ?? existing.namaGolongan;
+      const tipeGolongan = dto.tipeGolongan?.trim() ?? existing.tipeGolongan;
+      const identityChanged =
+        namaGolongan !== existing.namaGolongan ||
+        tipeGolongan !== existing.tipeGolongan;
+      const order = resolveGolonganOrder(
+        namaGolongan,
+        tipeGolongan,
+        dto.order !== undefined
+          ? dto.order
+          : identityChanged
+            ? undefined
+            : existing.order,
+      );
+
       return await this.db.golongan.update({
         where: { id },
-        data: dto,
+        data: { namaGolongan, tipeGolongan, order },
       });
     } catch (error) {
-      if (error instanceof Error && error.message === 'GOLONGAN_NOT_FOUND') {
+      if (
+        error instanceof Error &&
+        ['GOLONGAN_NOT_FOUND', 'INVALID_GOLONGAN_ORDER'].includes(error.message)
+      ) {
         throw error;
       }
 
