@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -19,11 +20,13 @@ import { JwtAuthGuard } from 'src/guards/jwtguard';
 export class CreateGolonganDto {
   namaGolongan?: string;
   tipeGolongan?: string;
+  order?: number;
 }
 
 export class UpdateGolonganDto {
   namaGolongan?: string;
   tipeGolongan?: string;
+  order?: number;
 }
 
 export class GolonganQueryDto {
@@ -142,6 +145,14 @@ export class GolonganController {
   private handleError(error: unknown): never {
     if (error instanceof Error) {
       switch (error.message) {
+        case 'INVALID_GOLONGAN_ORDER':
+          throw new BadRequestException({
+            success: false,
+            statusCode: 400,
+            message:
+              'Order harus bilangan bulat positif dan sesuai urutan baku tipe golongan. Golongan tambahan harus setelah urutan baku.',
+          });
+
         case 'GOLONGAN_NOT_FOUND':
           throw new NotFoundException({
             success: false,

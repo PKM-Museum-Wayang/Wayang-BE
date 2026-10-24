@@ -25,10 +25,12 @@ model Golongan {
   id             Int    @id @default(autoincrement())
   namaGolongan   String
   tipeGolongan   String
+  order          Int
 
   wayang Wayang[]
 
   @@unique([namaGolongan, tipeGolongan])
+  @@index([tipeGolongan, order])
 }
 
 model Penyimpanan {

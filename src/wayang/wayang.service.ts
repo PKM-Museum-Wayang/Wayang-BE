@@ -29,29 +29,21 @@ export class WayangService {
     golonganId: number,
     tipeGolongan: string,
   ): Promise<number> {
-    const golonganDalamTipe = await this.database.golongan.findMany({
-      where: {
-        tipeGolongan,
-      },
-
-      orderBy: {
-        id: 'asc',
-      },
-
-      select: {
-        id: true,
-      },
+    const golongan = await this.database.golongan.findUnique({
+      where: { id: golonganId },
+      select: { tipeGolongan: true, order: true },
     });
 
-    const indexGolongan = golonganDalamTipe.findIndex(
-      (golongan) => golongan.id === golonganId,
-    );
-
-    if (indexGolongan === -1) {
+    if (
+      !golongan ||
+      golongan.tipeGolongan !== tipeGolongan ||
+      !Number.isInteger(golongan.order) ||
+      golongan.order < 1
+    ) {
       throw new Error('GOLONGAN_ORDER_NOT_FOUND');
     }
 
-    return indexGolongan + 1;
+    return golongan.order;
   }
 
   private async generateNoWayang(
