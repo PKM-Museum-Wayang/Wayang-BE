@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
-import { join } from 'path';
+import { configureStorage } from './storage/configure-storage';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -12,10 +12,6 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  app.useStaticAssets(join(process.cwd(), 'storage'), {
-    prefix: '/storage',
-  });
-
   const frontendUrl =
     configService.get<string>('FRONTEND_URL')?.split(',') ?? [];
 
@@ -23,6 +19,8 @@ async function bootstrap() {
     origin: frontendUrl,
     credentials: true,
   });
+
+  await configureStorage(app);
 
   const port = configService.get<number>('PORT') ?? 3000;
 
