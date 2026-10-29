@@ -10,6 +10,8 @@ import { PenyimpananModule } from './penyimpanan/penyimpanan.module';
 import { PeminjamanModule } from './peminjaman/peminjaman.module';
 import { StorageController } from './storage/storage.controller';
 import { KegiatanModule } from './kegiatan/kegiatan.module';
+import { BiografiModule } from './biografi/biografi.module';
+import { PesanKontakModule } from './pesan-kontak/pesan-kontak.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,6 +24,8 @@ import { KegiatanModule } from './kegiatan/kegiatan.module';
     PenyimpananModule,
     PeminjamanModule,
     KegiatanModule,
+    BiografiModule,
+    PesanKontakModule,
   ],
   controllers: [AppController, StorageController],
   providers: [AppService],
