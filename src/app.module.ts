@@ -8,17 +8,14 @@ import { WayangModule } from './wayang/wayang.module';
 import { GolonganModule } from './golongan/golongan.module';
 import { PenyimpananModule } from './penyimpanan/penyimpanan.module';
 import { PeminjamanModule } from './peminjaman/peminjaman.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { StorageController } from './storage/storage.controller';
 import { KegiatanModule } from './kegiatan/kegiatan.module';
+import { BiografiModule } from './biografi/biografi.module';
+import { PesanKontakModule } from './pesan-kontak/pesan-kontak.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'storage'),
-      serveRoot: '/storage',
     }),
     DatabaseModule,
     AuthModule,
@@ -27,8 +24,10 @@ import { KegiatanModule } from './kegiatan/kegiatan.module';
     PenyimpananModule,
     PeminjamanModule,
     KegiatanModule,
+    BiografiModule,
+    PesanKontakModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, StorageController],
   providers: [AppService],
 })
 export class AppModule {}

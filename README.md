@@ -22,6 +22,16 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 
+## Biografi API
+
+Dokumentasi lengkap untuk integrasi frontend (autentikasi cookie, CRUD, validasi, upload foto, error, dan contoh TypeScript): [BIOGRAFI_API.md](BIOGRAFI_API.md).
+
+Dokumentasi teknis migrasi: [docs/biografi-api.md](docs/biografi-api.md).
+
+## Pesan Hubungi Kami API
+
+Dokumentasi endpoint, validasi, autentikasi, dan integrasi frontend: [docs/pesan-kontak-api.md](docs/pesan-kontak-api.md).
+
 ## Project setup
 
 Install dependencies:

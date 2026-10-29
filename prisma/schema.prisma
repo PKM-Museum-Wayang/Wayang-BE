@@ -140,6 +140,40 @@ model Kegiatan {
   updatedAt   DateTime @updatedAt
 }
 
+// Singleton: constraint CHECK pada migrasi membatasi id hanya bernilai 1.
+model Biografi {
+  id                 Int      @id @default(1)
+  fotoProfil         String   @db.VarChar(255)
+  namaPemilikKoleksi String   @db.VarChar(255)
+  email              String   @db.VarChar(255)
+  phoneNumber        String   @db.VarChar(20)
+  alamat             String   @db.Text
+  hariMulai          String   @db.VarChar(10)
+  hariSelesai        String   @db.VarChar(10)
+  jamBuka            String   @db.VarChar(5)
+  jamTutup           String   @db.VarChar(5)
+  instagram          String?  @db.VarChar(2048)
+  facebook           String?  @db.VarChar(2048)
+  youtube            String?  @db.VarChar(2048)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model PesanKontak {
+  id          Int      @id @default(autoincrement())
+  namaLengkap String   @db.VarChar(255)
+  asal        String   @db.VarChar(255)
+  email       String   @db.VarChar(255)
+  noTelp      String   @db.VarChar(20)
+  jenisTopik  String   @db.VarChar(20)
+  pesan       String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt, id])
+  @@index([jenisTopik])
+}
+
 model GambarKegiatan {
   id          Int   @id @default(autoincrement())
   fileUrl     String
