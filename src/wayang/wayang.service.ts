@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { DatabaseService } from 'src/database/database.service';
 
@@ -6,11 +6,21 @@ import { WayangDto } from './wayang,.dto';
 import { MediaWayangDto } from './mediawayang.dto';
 import { WayangQueryDto } from './wayangquery.dto';
 
-import * as fs from 'fs';
-import * as path from 'path';
+import {
+  deleteStoredWayangMedia,
+  storeWayangMedia,
+} from './wayang-watermark';
 
 @Injectable()
 export class WayangService {
+  private readonly logger = new Logger(WayangService.name);
+
+  private async cleanupMedia(fileUrl: string) {
+    await deleteStoredWayangMedia(fileUrl).catch((error) => {
+      this.logger.warn(`Gagal menghapus file media ${fileUrl}: ${String(error)}`);
+    });
+  }
+
   constructor(private readonly database: DatabaseService) {}
 
   private readonly gayaMap: Record<string, string> = {
@@ -175,17 +185,22 @@ export class WayangService {
       throw new Error('FILE_REQUIRED');
     }
 
-    const fileUrl = `/storage/${file.filename}`;
+    const fileUrl = await storeWayangMedia(file);
 
-    return this.database.mediaWayang.create({
-      data: {
-        namaFile: body.namaFile,
-        jenis: body.jenis,
-        keterangan: body.keterangan,
-        fileUrl,
-        wayangId,
-      },
-    });
+    try {
+      return await this.database.mediaWayang.create({
+        data: {
+          namaFile: body.namaFile,
+          jenis: fileUrl.endsWith('.webp') ? 'IMAGE' : 'VIDEO',
+          keterangan: body.keterangan,
+          fileUrl,
+          wayangId,
+        },
+      });
+    } catch (error) {
+      await this.cleanupMedia(fileUrl);
+      throw error;
+    }
   }
 
   async findAll(query: WayangQueryDto) {
@@ -459,16 +474,6 @@ export class WayangService {
       throw new Error('WAYANG_NOT_FOUND');
     }
 
-    for (const media of wayang.media) {
-      if (media.fileUrl) {
-        const filePath = path.join(process.cwd(), media.fileUrl);
-
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      }
-    }
-
     await this.database.mediaWayang.deleteMany({
       where: {
         wayangId: id,
@@ -492,6 +497,10 @@ export class WayangService {
         id,
       },
     });
+
+    for (const media of wayang.media) {
+      if (media.fileUrl) await this.cleanupMedia(media.fileUrl);
+    }
   }
 
   async updateMedia(
@@ -509,31 +518,28 @@ export class WayangService {
       throw new Error('MEDIA_NOT_FOUND');
     }
 
-    if (file && media.fileUrl) {
-      const oldFilePath = path.join(process.cwd(), media.fileUrl);
-
-      if (fs.existsSync(oldFilePath)) {
-        fs.unlinkSync(oldFilePath);
-      }
+    const fileUrl = file ? await storeWayangMedia(file) : undefined;
+    let updated: typeof media;
+    try {
+      updated = await this.database.mediaWayang.update({
+        where: { id: mediaId },
+        data: {
+          namaFile: body.namaFile,
+          jenis: fileUrl
+            ? (fileUrl.endsWith('.webp') ? 'IMAGE' : 'VIDEO')
+            : media.jenis,
+          keterangan: body.keterangan,
+          ...(fileUrl && { fileUrl }),
+        },
+      });
+    } catch (error) {
+      if (fileUrl) await this.cleanupMedia(fileUrl);
+      throw error;
     }
 
-    return this.database.mediaWayang.update({
-      where: {
-        id: mediaId,
-      },
-
-      data: {
-        namaFile: body.namaFile,
-
-        jenis: body.jenis,
-
-        keterangan: body.keterangan,
-
-        ...(file && {
-          fileUrl: `/storage/${file.filename}`,
-        }),
-      },
-    });
+    // Keep the old file until watermarking and the database update succeed.
+    if (fileUrl && media.fileUrl) await this.cleanupMedia(media.fileUrl);
+    return updated;
   }
 
   async removeMedia(mediaId: number) {
@@ -547,19 +553,12 @@ export class WayangService {
       throw new Error('MEDIA_NOT_FOUND');
     }
 
-    if (media.fileUrl) {
-      const filePath = path.join(process.cwd(), media.fileUrl);
-
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
-
     await this.database.mediaWayang.delete({
       where: {
         id: mediaId,
       },
     });
+    if (media.fileUrl) await this.cleanupMedia(media.fileUrl);
   }
 
   async findMedia(mediaId: number) {

@@ -11,6 +11,7 @@ import {
   Query,
   BadRequestException,
   InternalServerErrorException,
+  HttpException,
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
@@ -21,9 +22,7 @@ import { JwtAuthGuard } from 'src/guards/jwtguard';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { diskStorage } from 'multer';
-
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 
 import { WayangService } from './wayang.service';
 
@@ -271,16 +270,8 @@ export class WayangController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './storage',
-
-        filename: (req, file, cb) => {
-          const unique =
-            Date.now() + '-' + Math.random().toString(36).substring(7);
-
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
+      storage: memoryStorage(),
+      limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
   async addMedia(
@@ -299,6 +290,7 @@ export class WayangController {
         data,
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       if (error instanceof Error) {
         switch (error.message) {
           case 'WAYANG_NOT_FOUND':
@@ -336,16 +328,8 @@ export class WayangController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './storage',
-
-        filename: (req, file, cb) => {
-          const unique =
-            Date.now() + '-' + Math.random().toString(36).substring(7);
-
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
+      storage: memoryStorage(),
+      limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
   async updateMedia(
@@ -368,6 +352,7 @@ export class WayangController {
         data,
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       if (error instanceof Error) {
         switch (error.message) {
           case 'MEDIA_NOT_FOUND':
