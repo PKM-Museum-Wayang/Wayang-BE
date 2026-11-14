@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { DatabaseService } from 'src/database/database.service';
+import type { Prisma } from 'src/generated/prisma/client';
 
 import type {
   CreatePeminjamanDto,
@@ -58,136 +59,61 @@ export class PeminjamanService {
     return date;
   }
 
-  async create(body: CreatePeminjamanDto) {
-    const hasWayang = body.wayangId !== undefined && body.wayangId !== null;
-
-    const hasPenyimpanan =
-      body.penyimpananId !== undefined && body.penyimpananId !== null;
-
-    if (hasWayang === hasPenyimpanan) {
-      throw new Error('INVALID_LOAN_TARGET');
-    }
-    const tanggalPinjam = this.parseTanggalPinjam(body.tanggalPinjam);
-
-    const tanggalKembali = this.parseTanggalKembali(body.tanggalKembali);
-
-    if (tanggalKembali <= tanggalPinjam) {
-      throw new Error('INVALID_DATE');
+  private async checkAvailability(
+    tx: Prisma.TransactionClient,
+    wayangId: number | null,
+    penyimpananId: number | null,
+    tanggalPinjam: Date,
+    tanggalKembali: Date,
+    excludeId?: number,
+  ) {
+    let kotakId = penyimpananId;
+    if (wayangId !== null) {
+      const wayang = await tx.wayang.findUnique({ where: { id: wayangId } });
+      if (!wayang) throw new Error('WAYANG_NOT_FOUND');
+      kotakId = wayang.penyimpananId;
     }
 
-    let peminjam = await this.database.peminjam.findFirst({
+    const kotak = await tx.$queryRaw<{ id: number }[]>`SELECT id FROM Penyimpanan WHERE id = ${kotakId} FOR UPDATE`;
+    if (!kotak.length) throw new Error('PENYIMPANAN_NOT_FOUND');
+
+    const bentrok = await tx.logPeminjaman.findFirst({
       where: {
-        noHp: body.noHp,
-      },
-    });
-
-    if (!peminjam) {
-      peminjam = await this.database.peminjam.create({
-        data: {
-          namaPeminjam: body.namaPeminjam.trim(),
-
-          alamat: body.alamat.trim(),
-
-          noHp: body.noHp.trim(),
-        },
-      });
-    }
-
-    /*
-     * =====================================================
-     * 4. Jika yang dipinjam adalah WAYANG
-     * =====================================================
-     */
-
-    if (hasWayang) {
-      const wayang = await this.database.wayang.findUnique({
-        where: {
-          id: body.wayangId!,
-        },
-      });
-
-      if (!wayang) {
-        throw new Error('WAYANG_NOT_FOUND');
-      }
-
-      const bentrok = await this.database.logPeminjaman.findFirst({
-        where: {
-          wayangId: body.wayangId,
-
-          status: 'DIPINJAM',
-
-          tanggalPinjam: {
-            lte: tanggalKembali,
-          },
-
-          tanggalKembali: {
-            gte: tanggalPinjam,
-          },
-        },
-      });
-
-      if (bentrok) {
-        throw new Error('WAYANG_UNAVAILABLE');
-      }
-    }
-
-    if (hasPenyimpanan) {
-      const penyimpanan = await this.database.penyimpanan.findUnique({
-        where: {
-          id: body.penyimpananId!,
-        },
-      });
-
-      if (!penyimpanan) {
-        throw new Error('PENYIMPANAN_NOT_FOUND');
-      }
-
-      const bentrok = await this.database.logPeminjaman.findFirst({
-        where: {
-          penyimpananId: body.penyimpananId,
-
-          status: 'DIPINJAM',
-
-          tanggalPinjam: {
-            lte: tanggalKembali,
-          },
-
-          tanggalKembali: {
-            gte: tanggalPinjam,
-          },
-        },
-      });
-
-      if (bentrok) {
-        throw new Error('PENYIMPANAN_UNAVAILABLE');
-      }
-    }
-
-    return this.database.logPeminjaman.create({
-      data: {
-        peminjamId: peminjam.id,
-
-        wayangId: hasWayang ? body.wayangId! : null,
-
-        penyimpananId: hasPenyimpanan ? body.penyimpananId! : null,
-
-        tanggalPinjam,
-
-        tanggalKembali,
-
-        keterangan: body.keterangan?.trim() || null,
-
+        ...(excludeId !== undefined && { id: { not: excludeId } }),
         status: 'DIPINJAM',
-      },
-
-      include: {
-        peminjam: true,
-
-        wayang: true,
-
-        penyimpanan: true,
+        tanggalPinjam: { lte: tanggalKembali },
+        tanggalKembali: { gte: tanggalPinjam },
+        OR: wayangId !== null
+          ? [{ wayangId }, { penyimpananId: kotakId }]
+          : [{ penyimpananId: kotakId }, { wayang: { penyimpananId: kotakId! } }],
       },
     });
+    if (bentrok) throw new Error(wayangId !== null ? 'WAYANG_UNAVAILABLE' : 'PENYIMPANAN_UNAVAILABLE');
+  }
+
+  async create(body: CreatePeminjamanDto) {
+    const wayangId = body.wayangId ?? null;
+    const penyimpananId = body.penyimpananId ?? null;
+    if ((wayangId === null) === (penyimpananId === null)) throw new Error('INVALID_LOAN_TARGET');
+
+    const tanggalPinjam = this.parseTanggalPinjam(body.tanggalPinjam);
+    const tanggalKembali = this.parseTanggalKembali(body.tanggalKembali);
+    if (tanggalKembali <= tanggalPinjam) throw new Error('INVALID_DATE');
+
+    return this.database.$transaction(async (tx) => {
+      await this.checkAvailability(tx, wayangId, penyimpananId, tanggalPinjam, tanggalKembali);
+      const noHp = body.noHp.trim();
+      let peminjam = await tx.peminjam.findFirst({ where: { noHp } });
+      if (!peminjam) {
+        peminjam = await tx.peminjam.create({
+          data: { namaPeminjam: body.namaPeminjam.trim(), alamat: body.alamat.trim(), noHp },
+        });
+      }
+      return tx.logPeminjaman.create({
+        data: { peminjamId: peminjam.id, wayangId, penyimpananId, tanggalPinjam, tanggalKembali, keterangan: body.keterangan?.trim() || null, status: 'DIPINJAM' },
+        include: { peminjam: true, wayang: true, penyimpanan: true },
+      });
+    }, { isolationLevel: 'ReadCommitted' });
   }
 
   async findAll(query: PeminjamanQueryDto) {
@@ -344,170 +270,45 @@ export class PeminjamanService {
   }
 
   async update(id: number, body: UpdatePeminjamanDto) {
-    const existing = await this.database.logPeminjaman.findUnique({
-      where: {
-        id,
-      },
+    return this.database.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM LogPeminjaman WHERE id = ${id} FOR UPDATE`;
+      const existing = await tx.logPeminjaman.findUnique({ where: { id } });
+      if (!existing) throw new Error('LOAN_NOT_FOUND');
 
-      include: {
-        peminjam: true,
-      },
-    });
+      const wayangId = body.wayangId !== undefined ? body.wayangId : existing.wayangId;
+      const penyimpananId = body.penyimpananId !== undefined ? body.penyimpananId : existing.penyimpananId;
+      if ((wayangId === null) === (penyimpananId === null)) throw new Error('INVALID_LOAN_TARGET');
 
-    if (!existing) {
-      throw new Error('LOAN_NOT_FOUND');
-    }
+      const tanggalPinjam = body.tanggalPinjam !== undefined ? this.parseTanggalPinjam(body.tanggalPinjam) : existing.tanggalPinjam;
+      const tanggalKembali = body.tanggalKembali !== undefined ? this.parseTanggalKembali(body.tanggalKembali) : existing.tanggalKembali;
+      if (!tanggalKembali || tanggalKembali <= tanggalPinjam) throw new Error('INVALID_DATE');
 
-    const wayangId =
-      body.wayangId !== undefined ? body.wayangId : existing.wayangId;
-
-    const penyimpananId =
-      body.penyimpananId !== undefined
-        ? body.penyimpananId
-        : existing.penyimpananId;
-
-    const hasWayang = wayangId !== null && wayangId !== undefined;
-
-    const hasPenyimpanan =
-      penyimpananId !== null && penyimpananId !== undefined;
-
-    if (hasWayang === hasPenyimpanan) {
-      throw new Error('INVALID_LOAN_TARGET');
-    }
-
-    const tanggalPinjam =
-      body.tanggalPinjam !== undefined
-        ? this.parseTanggalPinjam(body.tanggalPinjam)
-        : existing.tanggalPinjam;
-
-    const tanggalKembali =
-      body.tanggalKembali !== undefined
-        ? this.parseTanggalKembali(body.tanggalKembali)
-        : existing.tanggalKembali
-          ? existing.tanggalKembali
-          : null;
-
-    if (!tanggalKembali || tanggalKembali <= tanggalPinjam) {
-      throw new Error('INVALID_DATE');
-    }
-
-    if (hasWayang) {
-      const wayang = await this.database.wayang.findUnique({
-        where: {
-          id: wayangId!,
-        },
-      });
-
-      if (!wayang) {
-        throw new Error('WAYANG_NOT_FOUND');
-      }
-    }
-
-    if (hasPenyimpanan) {
-      const penyimpanan = await this.database.penyimpanan.findUnique({
-        where: {
-          id: penyimpananId!,
-        },
-      });
-
-      if (!penyimpanan) {
+      const status = body.status ?? existing.status;
+      if (status !== 'DIPINJAM' && status !== 'DIKEMBALIKAN') throw new Error('INVALID_STATUS');
+      if (status === 'DIPINJAM') {
+        await this.checkAvailability(tx, wayangId, penyimpananId, tanggalPinjam, tanggalKembali, id);
+      } else if (wayangId !== null) {
+        if (!await tx.wayang.findUnique({ where: { id: wayangId } })) throw new Error('WAYANG_NOT_FOUND');
+      } else if (!await tx.penyimpanan.findUnique({ where: { id: penyimpananId! } })) {
         throw new Error('PENYIMPANAN_NOT_FOUND');
       }
-    }
 
-    if (body.status === undefined || body.status === 'DIPINJAM') {
-      const bentrok = await this.database.logPeminjaman.findFirst({
-        where: {
-          id: {
-            not: id,
+      if (body.namaPeminjam !== undefined || body.alamat !== undefined || body.noHp !== undefined) {
+        await tx.peminjam.update({
+          where: { id: existing.peminjamId },
+          data: {
+            ...(body.namaPeminjam !== undefined && { namaPeminjam: body.namaPeminjam.trim() }),
+            ...(body.alamat !== undefined && { alamat: body.alamat.trim() }),
+            ...(body.noHp !== undefined && { noHp: body.noHp.trim() }),
           },
-
-          status: 'DIPINJAM',
-
-          ...(hasWayang
-            ? {
-                wayangId,
-              }
-            : {
-                penyimpananId,
-              }),
-
-          tanggalPinjam: {
-            lte: tanggalKembali,
-          },
-
-          tanggalKembali: {
-            gte: tanggalPinjam,
-          },
-        },
-      });
-
-      if (bentrok) {
-        throw new Error(
-          hasWayang ? 'WAYANG_UNAVAILABLE' : 'PENYIMPANAN_UNAVAILABLE',
-        );
+        });
       }
-    }
-
-    if (
-      body.namaPeminjam !== undefined ||
-      body.alamat !== undefined ||
-      body.noHp !== undefined
-    ) {
-      await this.database.peminjam.update({
-        where: {
-          id: existing.peminjamId,
-        },
-
-        data: {
-          ...(body.namaPeminjam !== undefined && {
-            namaPeminjam: body.namaPeminjam.trim(),
-          }),
-
-          ...(body.alamat !== undefined && {
-            alamat: body.alamat.trim(),
-          }),
-
-          ...(body.noHp !== undefined && {
-            noHp: body.noHp.trim(),
-          }),
-        },
+      return tx.logPeminjaman.update({
+        where: { id },
+        data: { wayangId, penyimpananId, tanggalPinjam, tanggalKembali, status, ...(body.keterangan !== undefined && { keterangan: body.keterangan.trim() || null }) },
+        include: { peminjam: true, wayang: true, penyimpanan: true },
       });
-    }
-
-    const status = body.status ?? existing.status;
-
-    if (status !== 'DIPINJAM' && status !== 'DIKEMBALIKAN') {
-      throw new Error('INVALID_STATUS');
-    }
-
-    return this.database.logPeminjaman.update({
-      where: {
-        id,
-      },
-
-      data: {
-        wayangId: hasWayang ? wayangId : null,
-
-        penyimpananId: hasPenyimpanan ? penyimpananId : null,
-
-        tanggalPinjam,
-
-        tanggalKembali,
-
-        status,
-
-        ...(body.keterangan !== undefined && {
-          keterangan: body.keterangan.trim() || null,
-        }),
-      },
-
-      include: {
-        peminjam: true,
-        wayang: true,
-        penyimpanan: true,
-      },
-    });
+    }, { isolationLevel: 'ReadCommitted' });
   }
 
   async remove(id: number) {

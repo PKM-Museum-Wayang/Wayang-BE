@@ -8,16 +8,19 @@ import {
   Post,
   InternalServerErrorException,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 
 import { PenyimpananService } from './penyimpanan.service';
 import { PenyimpananDto } from './penyimpanan.dto';
+import { JwtAuthGuard } from '../guards/jwtguard';
 
 @Controller('penyimpanan')
 export class PenyimpananController {
   constructor(private readonly service: PenyimpananService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() body: PenyimpananDto) {
     try {
       const data = await this.service.create(body);
@@ -96,6 +99,7 @@ export class PenyimpananController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() body: PenyimpananDto) {
     try {
       const data = await this.service.update(Number(id), body);
@@ -134,6 +138,7 @@ export class PenyimpananController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: string) {
     try {
       await this.service.remove(Number(id));

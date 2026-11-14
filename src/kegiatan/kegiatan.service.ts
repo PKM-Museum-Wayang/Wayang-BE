@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 
 import { CreateKegiatanDto, UpdateKegiatanDto } from './kegiatan.dto';
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { randomUUID } from 'node:crypto';
+import sharp from 'sharp';
+import { STORAGE_DIRECTORY } from '../storage/storage-paths';
 
 @Injectable()
 export class KegiatanService {
@@ -416,6 +419,7 @@ export class KegiatanService {
   }
 
   async addGambar(id: number, file: Express.Multer.File) {
+    let filePath: string | undefined;
     try {
       const existing = await this.db.kegiatan.findUnique({
         where: { id },
@@ -429,7 +433,22 @@ export class KegiatanService {
         throw new Error('FILE_REQUIRED');
       }
 
-      const fileUrl = `/storage/${file.filename}`;
+      let image: Buffer;
+      try {
+        const input = sharp(file.buffer, { limitInputPixels: 40_000_000 });
+        const metadata = await input.metadata();
+        if (!['jpeg', 'png', 'webp'].includes(metadata.format ?? '')) {
+          throw new Error('INVALID_IMAGE');
+        }
+        image = await input.rotate().webp().toBuffer();
+      } catch {
+        throw new BadRequestException('Berkas harus berupa gambar JPEG, PNG, atau WebP yang valid.');
+      }
+
+      const filename = `${randomUUID()}.webp`;
+      filePath = path.join(STORAGE_DIRECTORY, filename);
+      await fs.promises.writeFile(filePath, image, { flag: 'wx' });
+      const fileUrl = `/storage/${filename}`;
 
       // Setiap upload nambah gambar baru — tidak menggantikan yang lama,
       // supaya satu kegiatan bisa punya banyak gambar untuk slideshow.
@@ -440,6 +459,8 @@ export class KegiatanService {
         },
       });
     } catch (error) {
+      if (filePath) await fs.promises.unlink(filePath).catch(() => {});
+      if (error instanceof BadRequestException) throw error;
       if (
         error instanceof Error &&
         (error.message === 'KEGIATAN_NOT_FOUND' ||

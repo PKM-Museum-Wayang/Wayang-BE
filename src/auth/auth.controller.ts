@@ -7,14 +7,17 @@ import {
   Post,
   UnauthorizedException,
   Res,
+  Req,
 } from '@nestjs/common';
 
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { logindto } from './login.dto';
 
 @Controller('auth')
 export class AuthController {
+  // shortcut: per-process limit, use a shared store when running multiple instances.
+  private readonly attempts = new Map<string, { count: number; expires: number }>();
   constructor(private readonly authservice: AuthService) {}
 
   @Post('login')
@@ -22,9 +25,31 @@ export class AuthController {
   async handleLogin(
     @Body() body: logindto,
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
   ) {
+    const now = Date.now();
+    for (const [key, value] of this.attempts) {
+      if (value.expires <= now) this.attempts.delete(key);
+    }
+    const key = request.ip ?? request.socket.remoteAddress ?? 'unknown';
+    let attempt = this.attempts.get(key);
+    if (!attempt) {
+      if (this.attempts.size >= 10000) {
+        throw new HttpException('Terlalu banyak percobaan login.', HttpStatus.TOO_MANY_REQUESTS);
+      }
+      attempt = { count: 0, expires: now + 15 * 60 * 1000 };
+      this.attempts.set(key, attempt);
+    }
+    if (attempt.count >= 10) {
+      throw new HttpException('Terlalu banyak percobaan login. Coba lagi nanti.', HttpStatus.TOO_MANY_REQUESTS);
+    }
+    attempt.count++;
     try {
+      if (typeof body?.username !== 'string' || typeof body?.password !== 'string' || !body.username || !body.password) {
+        throw new Error('INVALID_PASSWORD');
+      }
       const result = await this.authservice.loginService(body);
+      this.attempts.delete(key);
 
       response.cookie('access_token', result.token, {
         httpOnly: true,
@@ -59,12 +84,6 @@ export class AuthController {
 
       switch (error.message) {
         case 'USER_NOT_FOUND':
-          throw new UnauthorizedException({
-            success: false,
-            statusCode: HttpStatus.UNAUTHORIZED,
-            message: 'User not found.',
-          });
-
         case 'INVALID_PASSWORD':
           throw new UnauthorizedException({
             success: false,
@@ -83,5 +102,16 @@ export class AuthController {
           );
       }
     }
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.COOKIE_SECURE === 'true',
+      sameSite: 'lax',
+    });
+    return { success: true, message: 'Logout successful.' };
   }
 }
