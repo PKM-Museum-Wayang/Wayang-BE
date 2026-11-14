@@ -36,7 +36,7 @@ export class PeminjamanController {
   @Post()
   async create(@Body() body: CreatePeminjamanDto) {
     try {
-      this.logger.log(`Create peminjaman: ${JSON.stringify(body)}`);
+      this.logger.log('Create peminjaman');
 
       const data = await this.peminjamanService.create(body);
 

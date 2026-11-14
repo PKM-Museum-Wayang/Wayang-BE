@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  private readonly dummyHash = bcrypt.hashSync('invalid-login', 10);
   constructor(
     private readonly database: DatabaseService,
     private readonly jwtservice: JwtService,
@@ -18,13 +19,9 @@ export class AuthService {
       },
     });
 
-    if (!admin) {
-      throw new Error('USER_NOT_FOUND');
-    }
+    const isValid = await bcrypt.compare(data.password!, admin?.password ?? this.dummyHash);
 
-    const isValid = await bcrypt.compare(data.password!, admin.password);
-
-    if (!isValid) {
+    if (!admin || !isValid) {
       throw new Error('INVALID_PASSWORD');
     }
 

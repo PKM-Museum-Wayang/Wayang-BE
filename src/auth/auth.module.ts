@@ -16,6 +16,7 @@ import { JwtStrategy } from 'src/guards/jwtstrategy';
       useFactory: (config: ConfigService) => {
         return {
           secret: config.get<string>('SECRET_KEY'),
+          signOptions: { expiresIn: '1d' },
         };
       },
     }),

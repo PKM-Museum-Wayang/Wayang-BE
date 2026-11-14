@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   InternalServerErrorException,
+  HttpException,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -17,8 +18,7 @@ import {
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 
 import {
   CreateKegiatanDto,
@@ -123,16 +123,8 @@ export class KegiatanController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './storage',
-
-        filename: (req, file, cb) => {
-          const unique =
-            Date.now() + '-' + Math.random().toString(36).substring(7);
-
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
+      storage: memoryStorage(),
+      limits: { fileSize: 10 * 1024 * 1024 },
     }),
   )
   async addGambar(
@@ -155,6 +147,7 @@ export class KegiatanController {
   }
 
   private handleError(error: unknown): never {
+    if (error instanceof HttpException) throw error;
     if (error instanceof Error) {
       switch (error.message) {
         case 'KEGIATAN_NOT_FOUND':
