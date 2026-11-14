@@ -18,6 +18,8 @@ export class KegiatanService {
     limit?: number;
     search?: string;
     adminId?: number;
+    tanggalMulai?: string;
+    tanggalSampai?: string;
   }) {
     try {
       const page = Math.max(Number(query.page) || 1, 1);
@@ -28,7 +30,21 @@ export class KegiatanService {
 
       const search = query.search?.trim();
 
+      const parseBoundary = (value?: string) => {
+        if (value === undefined || value === '') return undefined;
+        if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) {
+          throw new BadRequestException('Format tanggal tidak valid.');
+        }
+        const date = new Date(value);
+        if (!Number.isFinite(date.getTime()) || date.toISOString() !== value) throw new BadRequestException('Tanggal tidak valid.');
+        return date;
+      };
+      const mulai = parseBoundary(query.tanggalMulai);
+      const sampai = parseBoundary(query.tanggalSampai);
+      if (mulai && sampai && mulai >= sampai) throw new BadRequestException('Rentang tanggal tidak valid.');
+
       const where = {
+        ...(mulai || sampai ? { tanggal: { ...(mulai && { gte: mulai }), ...(sampai && { lt: sampai }) } } : {}),
         ...(search
           ? {
               OR: [
@@ -213,7 +229,8 @@ export class KegiatanService {
           kegiatanPerAdmin: statistikAdmin,
         },
       };
-    } catch {
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
       throw new Error('DATABASE_ERROR');
     }
   }
