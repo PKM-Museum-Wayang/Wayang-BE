@@ -1,3 +1,5 @@
+jest.mock('../database/database.service', () => ({ DatabaseService: class {} }));
+
 import { WayangService } from './wayang.service';
 import type { DatabaseService } from '../database/database.service';
 
@@ -35,5 +37,23 @@ describe('Urutan golongan pada nomor wayang', () => {
     await expect(
       service['getUrutanGolongan'](999, 'DUDHAHAN'),
     ).rejects.toThrow('GOLONGAN_ORDER_NOT_FOUND');
+  });
+});
+
+describe('Nomor urut dalam kotak', () => {
+  it('mengunci kotak dan memakai nomor terbesar meskipun ada data yang dihapus', async () => {
+    const tx = {
+      $queryRaw: jest.fn().mockResolvedValue([]),
+      wayang: { findMany: jest.fn().mockResolvedValue([
+        { noWayang: 'PY 01 KI 3 - 1' },
+        { noWayang: 'PY 01 KI 3 - 3' },
+      ]) },
+    };
+    const service = new WayangService({} as DatabaseService);
+    await expect(service['nextNumber'](tx, 3)).resolves.toBe(4);
+    expect(tx.$queryRaw).toHaveBeenCalled();
+    expect(tx.wayang.findMany).toHaveBeenCalledWith({
+      where: { penyimpananId: 3 }, select: { noWayang: true },
+    });
   });
 });

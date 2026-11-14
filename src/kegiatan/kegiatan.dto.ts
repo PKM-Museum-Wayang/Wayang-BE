@@ -19,4 +19,6 @@ export class KegiatanQueryDto {
   limit?: number;
   search?: string;
   adminId?: number;
+  tanggalMulai?: string;
+  tanggalSampai?: string;
 }

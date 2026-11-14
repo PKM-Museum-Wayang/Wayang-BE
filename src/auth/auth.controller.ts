@@ -5,6 +5,8 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Get,
+  UseGuards,
   UnauthorizedException,
   Res,
   Req,
@@ -13,6 +15,7 @@ import {
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { logindto } from './login.dto';
+import { JwtAuthGuard } from '../guards/jwtguard';
 
 @Controller('auth')
 export class AuthController {
@@ -102,6 +105,12 @@ export class AuthController {
           );
       }
     }
+  }
+
+  @Get('session')
+  @UseGuards(JwtAuthGuard)
+  session(@Req() request: Request) {
+    return { data: { admin: request.user } };
   }
 
   @Post('logout')

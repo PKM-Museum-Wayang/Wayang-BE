@@ -82,6 +82,17 @@ export class WayangService {
     );
   }
 
+  private async nextNumber(tx: any, penyimpananId: number): Promise<number> {
+    await tx.$queryRaw`SELECT id FROM Penyimpanan WHERE id = ${penyimpananId} FOR UPDATE`;
+    const rows: { noWayang: string }[] = await tx.wayang.findMany({
+      where: { penyimpananId }, select: { noWayang: true },
+    });
+    return rows.reduce((max, row) => {
+      const match = row.noWayang.match(/-\s*(\d+)$/);
+      return Math.max(max, match ? Number(match[1]) : 0);
+    }, 0) + 1;
+  }
+
   async create(body: WayangDto) {
     if (!body.golonganId || !body.penyimpananId) {
       throw new Error('INVALID_REQUEST');
@@ -113,23 +124,13 @@ export class WayangService {
       throw new Error('PENYIMPANAN_NOT_FOUND');
     }
 
-    const countInKotak = await this.database.wayang.count({
-      where: {
-        penyimpananId: body.penyimpananId,
-      },
-    });
+    return this.database.$transaction(async (tx) => {
+      const urutanDalamKotak = await this.nextNumber(tx, body.penyimpananId);
+      const noWayang = await this.generateNoWayang(
+        kodeGaya, golongan.id, golongan.tipeGolongan, body.penyimpananId, urutanDalamKotak,
+      );
 
-    const urutanDalamKotak = countInKotak + 1;
-
-    const noWayang = await this.generateNoWayang(
-      kodeGaya,
-      golongan.id,
-      golongan.tipeGolongan,
-      body.penyimpananId,
-      urutanDalamKotak,
-    );
-
-    return this.database.wayang.create({
+    return tx.wayang.create({
       data: {
         noWayang,
 
@@ -163,6 +164,7 @@ export class WayangService {
         golongan: true,
         penyimpanan: true,
       },
+    });
     });
   }
 
@@ -399,34 +401,16 @@ export class WayangService {
       wayang.golonganId !== body.golonganId ||
       wayang.penyimpananId !== body.penyimpananId;
 
-    let noWayang = wayang.noWayang;
+    return this.database.$transaction(async (tx) => {
+      let noWayang = wayang.noWayang;
+      if (identityChanged) {
+        const urutanDalamKotak = await this.nextNumber(tx, body.penyimpananId);
+        noWayang = await this.generateNoWayang(
+          kodeGaya, golongan.id, golongan.tipeGolongan, body.penyimpananId, urutanDalamKotak,
+        );
+      }
 
-    if (identityChanged) {
-      const countInKotak = await this.database.wayang.count({
-        where: {
-          penyimpananId: body.penyimpananId,
-
-          NOT: {
-            id,
-          },
-        },
-      });
-
-      const urutanDalamKotak = countInKotak + 1;
-      const urutanGolongan = await this.getUrutanGolongan(
-        golongan.id,
-        golongan.tipeGolongan,
-      );
-
-      noWayang =
-        `${kodeGaya} ` +
-        `${String(urutanGolongan).padStart(2, '0')} ` +
-        `${kodeGolongan} ` +
-        `${body.penyimpananId} - ` +
-        `${urutanDalamKotak}`;
-    }
-
-    return this.database.wayang.update({
+    return tx.wayang.update({
       where: {
         id,
       },
@@ -456,6 +440,7 @@ export class WayangService {
         golongan: true,
         penyimpanan: true,
       },
+    });
     });
   }
 

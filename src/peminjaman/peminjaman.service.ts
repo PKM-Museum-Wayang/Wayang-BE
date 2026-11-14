@@ -82,10 +82,16 @@ export class PeminjamanService {
         ...(excludeId !== undefined && { id: { not: excludeId } }),
         status: 'DIPINJAM',
         tanggalPinjam: { lte: tanggalKembali },
-        tanggalKembali: { gte: tanggalPinjam },
-        OR: wayangId !== null
-          ? [{ wayangId }, { penyimpananId: kotakId }]
-          : [{ penyimpananId: kotakId }, { wayang: { penyimpananId: kotakId! } }],
+        AND: [
+          { OR: [
+            { tanggalKembali: { gte: tanggalPinjam } },
+            { tanggalKembali: { lt: new Date() } },
+          ] },
+          { OR: wayangId !== null
+            ? [{ wayangId }, { penyimpananId: kotakId }]
+            : [{ penyimpananId: kotakId }, { wayang: { penyimpananId: kotakId! } }],
+          },
+        ],
       },
     });
     if (bentrok) throw new Error(wayangId !== null ? 'WAYANG_UNAVAILABLE' : 'PENYIMPANAN_UNAVAILABLE');
